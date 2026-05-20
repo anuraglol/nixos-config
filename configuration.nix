@@ -1,13 +1,14 @@
-{ config, pkgs, unstable-pkgs, ... }:
-
-let
-  unstable = import <nixpkgs-unstable> { config = config.nixpkgs.config; };
-in
 {
-  imports =
-    [
-      ./hardware-configuration.nix
-    ];
+  config,
+  pkgs,
+  unstable-pkgs,
+  ...
+}:
+
+{
+  imports = [
+    ./hardware-configuration.nix
+  ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -15,11 +16,9 @@ in
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   networking.hostName = "nixos";
-
   networking.networkmanager.enable = true;
 
   time.timeZone = "Asia/Kolkata";
-
   i18n.defaultLocale = "en_IN";
 
   i18n.extraLocaleSettings = {
@@ -35,7 +34,6 @@ in
   };
 
   services.xserver.enable = true;
-
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
 
@@ -45,7 +43,6 @@ in
   };
 
   services.printing.enable = true;
-
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -55,38 +52,46 @@ in
     pulse.enable = true;
   };
 
-services.udev.extraRules = ''
-  SUBSYSTEM=="pci", DRIVER=="xhci_hcd", ATTR{power/wakeup}="disabled"
-'';
+  services.udev.extraRules = ''
+    SUBSYSTEM=="pci", DRIVER=="xhci_hcd", ATTR{power/wakeup}="disabled"
+  '';
 
-systemd.services.disable-gpp-wakeup = {
-path = [ pkgs.gnugrep pkgs.coreutils ];
-  description = "Disable GPP/GP PCIe bridge wakeup sources";
-  wantedBy = [ "multi-user.target" ];
-  after = [ "systemd-udevd.service" ];
-  serviceConfig = {
-    Type = "oneshot";
-    RemainAfterExit = true;
-    ExecStart = let
-      script = pkgs.writeShellScript "disable-gpp-wakeup" ''
-        for dev in GPP1 GPP6 GPP7 GP19; do
-          if grep -q "^''${dev}.*enabled" /proc/acpi/wakeup; then
-            echo "$dev" > /proc/acpi/wakeup
-            echo "disabled $dev"
-          fi
-        done
-      '';
-    in "${script}";
+  systemd.services.disable-gpp-wakeup = {
+    path = [
+      pkgs.gnugrep
+      pkgs.coreutils
+    ];
+    description = "Disable GPP/GP PCIe bridge wakeup sources";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "systemd-udevd.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart =
+        let
+          script = pkgs.writeShellScript "disable-gpp-wakeup" ''
+            for dev in GPP1 GPP6 GPP7 GP19; do
+              if grep -q "^''${dev}.*enabled" /proc/acpi/wakeup; then
+                echo "$dev" > /proc/acpi/wakeup
+                echo "disabled $dev"
+              fi
+            done
+          '';
+        in
+        "${script}";
+    };
   };
-};
 
   services.flatpak.enable = true;
 
   users.users.anurag = {
     isNormalUser = true;
     description = "anurag";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
+    packages = with pkgs; [ ];
     shell = pkgs.fish;
   };
 
@@ -111,41 +116,19 @@ path = [ pkgs.gnugrep pkgs.coreutils ];
   fonts.fontDir.enable = true;
 
   hardware.bluetooth = {
-  enable = true;
-  powerOnBoot = true;
-};
+    enable = true;
+    powerOnBoot = true;
+  };
 
+  # Minimal system-wide baseline
   environment.systemPackages = with pkgs; [
     vim
     wget
     neovim
     git
     curl
-    kitty
-    fzf
-    fastfetch
-    pnpm
-    wl-clipboard
-    go
     cloudflare-warp
-    qbittorrent
-    mpv
-    vlc
-    fish
-    htop
-    bibata-cursors
-    gnome-tweaks
-    jetbrains-mono
-    bun
-    nodejs
-    gh
-    zoxide
-    unzip
-    p7zip
-    ghostty
-    tmux
     nil
-
     unstable-pkgs.zed-editor
   ];
 
@@ -157,7 +140,10 @@ path = [ pkgs.gnugrep pkgs.coreutils ];
     jetbrains-mono
   ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   system.stateVersion = "25.11";
 }
