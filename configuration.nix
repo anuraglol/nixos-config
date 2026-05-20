@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, unstable-pkgs, ... }:
 
 let
   unstable = import <nixpkgs-unstable> { config = config.nixpkgs.config; };
@@ -36,8 +36,8 @@ in
 
   services.xserver.enable = true;
 
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
 
   services.xserver.xkb = {
     layout = "us";
@@ -144,8 +144,9 @@ path = [ pkgs.gnugrep pkgs.coreutils ];
     p7zip
     ghostty
     tmux
-    unstable.zed-editor
     nil
+
+    unstable-pkgs.zed-editor
   ];
 
   environment.variables = {
