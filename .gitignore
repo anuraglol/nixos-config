@@ -1,0 +1,13 @@
+cat <<EOF > .gitignore
+# Secrets or keys you might split into other files
+*secret*
+*.key
+*.pem
+
+# Editor/OS specific files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+EOF
