@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, unstable-pkgs, ... }:
 {
   home.username = "anurag";
   home.homeDirectory = "/home/anurag";
@@ -91,6 +91,9 @@
 
   programs.zed-editor = {
     enable = true;
+
+    package = unstable-pkgs.zed-editor;
+
     userSettings = {
       icon_theme = "Zed (Default)";
       cli_default_open_behavior = "new_window";
