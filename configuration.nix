@@ -15,6 +15,13 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  boot.kernelParams = [
+    "amdgpu.dcdebugmask=0x10"
+    "nvme_core.default_ps_max_latency_us=0"
+  ];
+
+  hardware.amdgpu.initrd.enable = true;
+
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
@@ -69,15 +76,20 @@
     neovim
     git
     curl
-    cloudflare-warp
     nil
     nixd
     package-version-server
+    stdenv.cc
+    gnumake
+
+    cloudflare-warp
   ];
 
   fonts.packages = with pkgs; [
     jetbrains-mono
   ];
+
+  services.cloudflare-warp.enable = true;
 
   nix.settings.experimental-features = [
     "nix-command"

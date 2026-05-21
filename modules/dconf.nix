@@ -2,7 +2,6 @@
 
 {
   dconf.settings = {
-    # (unchanged; everything as before)
     "org/gnome/Console" = {
       last-window-maximised = true;
     };
@@ -215,6 +214,7 @@
       sort-directories-first = false;
     };
     "org/gtk/settings/file-chooser" = {
+      bookmarks = [ "file:///data data" ];
       date-format = "regular";
       location-mode = "path-bar";
       show-hidden = false;

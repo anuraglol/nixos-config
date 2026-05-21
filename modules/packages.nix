@@ -14,12 +14,15 @@
     p7zip
     opencode
     github-copilot-cli
+    hey
 
     mpv
     vlc
     qbittorrent
     gnome-tweaks
     bibata-cursors
+    obs-studio
+    ffmpeg
 
     nodejs
     pnpm
