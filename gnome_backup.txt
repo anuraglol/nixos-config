@@ -1,0 +1,352 @@
+[org/gnome/Console]
+last-window-maximised=true
+last-window-size=(732, 528)
+
+[org/gnome/Geary]
+migrated-config=true
+window-height=353
+window-width=908
+
+[org/gnome/Showtime/State]
+is-maximized=false
+
+[org/gnome/Snapshot]
+is-maximized=false
+window-height=640
+window-width=800
+
+[org/gnome/baobab/ui]
+is-maximized=false
+window-size=(960, 600)
+
+[org/gnome/calculator]
+base=10
+button-mode='basic'
+source-units=['degree']
+target-units=['radian']
+unit-category='angle'
+window-maximized=false
+window-size=(360, 616)
+
+[org/gnome/calendar]
+active-view='month'
+window-maximized=true
+window-size=(768, 600)
+
+[org/gnome/control-center]
+last-panel='system'
+window-state=(980, 640, true)
+
+[org/gnome/desktop/app-folders]
+folder-children=['System', 'Utilities', 'YaST', 'Pardus']
+
+[org/gnome/desktop/app-folders/folders/Pardus]
+categories=['X-Pardus-Apps']
+name='X-Pardus-Apps.directory'
+translate=true
+
+[org/gnome/desktop/app-folders/folders/System]
+apps=['org.gnome.baobab.desktop', 'org.gnome.DiskUtility.desktop', 'org.gnome.Logs.desktop', 'org.freedesktop.MalcontentControl.desktop', 'org.gnome.SystemMonitor.desktop']
+name='X-GNOME-Shell-System.directory'
+translate=true
+
+[org/gnome/desktop/app-folders/folders/Utilities]
+apps=['org.gnome.Decibels.desktop', 'org.gnome.Connections.desktop', 'org.gnome.Papers.desktop', 'org.gnome.font-viewer.desktop', 'org.gnome.Loupe.desktop']
+name='X-GNOME-Shell-Utilities.directory'
+translate=true
+
+[org/gnome/desktop/app-folders/folders/YaST]
+categories=['X-SuSE-YaST']
+name='suse-yast.directory'
+translate=true
+
+[org/gnome/desktop/background]
+picture-options='zoom'
+picture-uri='file:///home/anurag/.config/background'
+picture-uri-dark='file:///home/anurag/.config/background'
+
+[org/gnome/desktop/input-sources]
+sources=[('xkb', 'us')]
+xkb-options=['caps:swapescape']
+
+[org/gnome/desktop/interface]
+color-scheme='prefer-dark'
+cursor-size=20
+cursor-theme='Bibata-Modern-Ice'
+document-font-name='JetBrains Mono 12'
+enable-animations=true
+font-hinting='full'
+font-name='JetBrains Mono 11'
+monospace-font-name='JetBrains Mono 11'
+show-battery-percentage=true
+text-scaling-factor=0.97999999999999998
+
+[org/gnome/desktop/notifications]
+application-children=['app-zen-browser-zen', 'appimagekit-62153740e56078e0d59f64d3b9e0fe21-helium', 'gnome-about-panel', 'org-qbittorrent-qbittorrent', 'org-gnome-showtime', 'vlc', 'org-gnome-software', 'gnome-power-panel', 'org-gnome-nautilus', 'firefox', 'org-gnome-console', 'org-gnome-extensions', 'spotify', 'com-spotify-client', 'dev-zed-zed']
+
+[org/gnome/desktop/notifications/application/app-zen-browser-zen]
+application-id='app.zen_browser.zen.desktop'
+
+[org/gnome/desktop/notifications/application/appimagekit-62153740e56078e0d59f64d3b9e0fe21-helium]
+application-id='appimagekit_62153740e56078e0d59f64d3b9e0fe21-Helium.desktop'
+
+[org/gnome/desktop/notifications/application/com-spotify-client]
+application-id='com.spotify.Client.desktop'
+
+[org/gnome/desktop/notifications/application/dev-zed-zed]
+application-id='dev.zed.Zed.desktop'
+
+[org/gnome/desktop/notifications/application/firefox]
+application-id='firefox.desktop'
+
+[org/gnome/desktop/notifications/application/gnome-about-panel]
+application-id='gnome-about-panel.desktop'
+
+[org/gnome/desktop/notifications/application/gnome-power-panel]
+application-id='gnome-power-panel.desktop'
+
+[org/gnome/desktop/notifications/application/org-gnome-console]
+application-id='org.gnome.Console.desktop'
+
+[org/gnome/desktop/notifications/application/org-gnome-extensions]
+application-id='org.gnome.Extensions.desktop'
+
+[org/gnome/desktop/notifications/application/org-gnome-nautilus]
+application-id='org.gnome.Nautilus.desktop'
+
+[org/gnome/desktop/notifications/application/org-gnome-showtime]
+application-id='org.gnome.Showtime.desktop'
+
+[org/gnome/desktop/notifications/application/org-gnome-software]
+application-id='org.gnome.Software.desktop'
+
+[org/gnome/desktop/notifications/application/org-qbittorrent-qbittorrent]
+application-id='org.qbittorrent.qBittorrent.desktop'
+
+[org/gnome/desktop/notifications/application/spotify]
+application-id='spotify.desktop'
+
+[org/gnome/desktop/notifications/application/vlc]
+application-id='vlc.desktop'
+
+[org/gnome/desktop/peripherals/mouse]
+accel-profile='flat'
+speed=0.10729613733905574
+
+[org/gnome/desktop/peripherals/touchpad]
+speed=-0.25321888412017168
+two-finger-scrolling-enabled=true
+
+[org/gnome/desktop/wm/keybindings]
+close=['<Super>w']
+move-to-workspace-1=['<Shift><Super>1']
+move-to-workspace-2=['<Shift><Super>2']
+move-to-workspace-3=['<Shift><Super>3']
+move-to-workspace-4=['<Shift><Super>4']
+switch-to-workspace-1=['<Super>1']
+switch-to-workspace-2=['<Super>2']
+switch-to-workspace-3=['<Super>3']
+switch-to-workspace-4=['<Super>4']
+toggle-fullscreen=['<Super>f']
+
+[org/gnome/epiphany/state]
+is-maximized=true
+window-size=(1280, 768)
+
+[org/gnome/evolution-data-server]
+migrated=true
+
+[org/gnome/gnome-system-monitor]
+current-tab='resources'
+maximized=false
+show-dependencies=false
+show-whose-processes='user'
+window-height=720
+window-width=800
+
+[org/gnome/gnome-system-monitor/proctree]
+col-26-visible=false
+col-26-width=0
+
+[org/gnome/mutter]
+experimental-features=['scale-monitor-framebuffer']
+
+[org/gnome/nautilus/preferences]
+default-folder-viewer='icon-view'
+migrated-gtk-settings=true
+
+[org/gnome/nautilus/window-state]
+initial-size=(890, 550)
+initial-size-file-chooser=(890, 550)
+maximized=true
+
+[org/gnome/portal/filechooser/app.zen_browser.zen]
+last-folder-path='/home/anurag/Downloads'
+
+[org/gnome/portal/filechooser/firefox]
+last-folder-path='/home/anurag/Downloads'
+
+[org/gnome/portal/filechooser/org.localsend.localsend_app]
+last-folder-path='/home/anurag/Downloads/[Anime Time] Attack On Titan (Complete Series) (S01-S04+OVA) [Dual Audio][BD][1080p][HEVC 10bit x265][AAC][Eng Sub]/[Anime Time] Attack On Titan (Season 4 Part 3)'
+
+[org/gnome/settings-daemon/plugins/color]
+night-light-schedule-automatic=false
+
+[org/gnome/settings-daemon/plugins/housekeeping]
+donation-reminder-last-shown=int64 1778443556998411
+
+[org/gnome/settings-daemon/plugins/media-keys]
+control-center=['<Super>i']
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/']
+home=['<Super>e']
+www=['<Super>b']
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0]
+binding='<Super>Return'
+command='ghostty'
+name='ghostty'
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1]
+binding='<Super>z'
+command='zeditor'
+name='zed'
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2]
+binding='<Super>s'
+command='flatpak run com.spotify.Client'
+name='spotify'
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3]
+binding='<Super>c'
+command='zeditor /home/anurag/Documents/nixos-config'
+name='nix-config'
+
+[org/gnome/settings-daemon/plugins/power]
+power-button-action='nothing'
+
+[org/gnome/shell]
+app-picker-layout=[{'org.gnome.Contacts.desktop': <{'position': <0>}>, 'org.gnome.Weather.desktop': <{'position': <1>}>, 'org.gnome.clocks.desktop': <{'position': <2>}>, 'org.gnome.Maps.desktop': <{'position': <3>}>, 'org.gnome.Music.desktop': <{'position': <4>}>, 'org.gnome.SimpleScan.desktop': <{'position': <5>}>, 'org.gnome.Settings.desktop': <{'position': <6>}>, 'org.gnome.Showtime.desktop': <{'position': <7>}>, 'org.gnome.Snapshot.desktop': <{'position': <8>}>, 'org.gnome.Characters.desktop': <{'position': <9>}>, 'Utilities': <{'position': <10>}>, 'System': <{'position': <11>}>, 'cups.desktop': <{'position': <12>}>, 'org.gnome.Console.desktop': <{'position': <13>}>, 'nixos-manual.desktop': <{'position': <14>}>, 'org.gnome.Tour.desktop': <{'position': <15>}>, 'org.gnome.Yelp.desktop': <{'position': <16>}>, 'org.gnome.seahorse.Application.desktop': <{'position': <17>}>, 'xterm.desktop': <{'position': <18>}>, 'org.gnome.Extensions.desktop': <{'position': <19>}>, 'firefox.desktop': <{'position': <20>}>}, {'org.gnome.Geary.desktop': <{'position': <0>}>, 'org.gnome.Epiphany.desktop': <{'position': <1>}>, 'org.gnome.Calendar.desktop': <{'position': <2>}>, 'org.gnome.Nautilus.desktop': <{'position': <3>}>, 'org.gnome.TextEditor.desktop': <{'position': <4>}>, 'org.gnome.Calculator.desktop': <{'position': <5>}>}]
+disabled-extensions=@as []
+enabled-extensions=['clipboard-indicator@tudmotu.com', 'caffeine@patapon.info', 'system-monitor@gnome-shell-extensions.gcampax.github.com', 'blur-my-shell@aunetx', 'just-perfection-desktop@just-perfection']
+favorite-apps=@as []
+last-selected-power-profile='power-saver'
+welcome-dialog-last-shown-version='50.1'
+
+[org/gnome/shell/extensions/blur-my-shell]
+rounded-blur-found=false
+settings-version=2
+
+[org/gnome/shell/extensions/blur-my-shell/appfolder]
+brightness=0.59999999999999998
+sigma=30
+
+[org/gnome/shell/extensions/blur-my-shell/applications]
+pipeline='pipeline_default'
+
+[org/gnome/shell/extensions/blur-my-shell/coverflow-alt-tab]
+pipeline='pipeline_default'
+
+[org/gnome/shell/extensions/blur-my-shell/dash-to-dock]
+blur=true
+brightness=0.59999999999999998
+pipeline='pipeline_default_rounded'
+sigma=30
+static-blur=true
+style-dash-to-dock=0
+
+[org/gnome/shell/extensions/blur-my-shell/lockscreen]
+pipeline='pipeline_default'
+
+[org/gnome/shell/extensions/blur-my-shell/overview]
+pipeline='pipeline_default'
+
+[org/gnome/shell/extensions/blur-my-shell/panel]
+blur=false
+brightness=0.59999999999999998
+corner-radius=0
+pipeline='pipeline_default'
+sigma=30
+
+[org/gnome/shell/extensions/blur-my-shell/screenshot]
+pipeline='pipeline_default'
+
+[org/gnome/shell/extensions/blur-my-shell/window-list]
+brightness=0.59999999999999998
+sigma=30
+
+[org/gnome/shell/extensions/caffeine]
+cli-toggle=false
+indicator-position-max=1
+toggle-shortcut=['']
+user-enabled=true
+
+[org/gnome/shell/extensions/clipboard-indicator]
+toggle-menu=['<Super>v']
+
+[org/gnome/shell/extensions/just-perfection]
+activities-button=true
+animation=4
+calendar=false
+clock-menu=true
+dash=true
+dash-separator=true
+double-super-to-appgrid=false
+events-button=false
+keyboard-layout=true
+overlay-key=true
+panel=true
+panel-notification-icon=true
+power-icon=true
+ripple-box=true
+search=true
+support-notifier-showed-version=36
+support-notifier-type=0
+switcher-popup-delay=false
+weather=false
+window-picker-icon=true
+window-preview-caption=true
+world-clock=false
+
+[org/gnome/shell/extensions/system-monitor]
+show-download=false
+show-swap=false
+show-upload=false
+
+[org/gnome/shell/keybindings]
+screenshot=['<Shift><Super>s']
+show-screenshot-ui=['Print']
+switch-to-application-1=@as []
+switch-to-application-2=@as []
+switch-to-application-3=@as []
+switch-to-application-4=@as []
+toggle-message-tray=['<Shift><Super>v']
+toggle-quick-settings=@as []
+
+[org/gnome/shell/world-clocks]
+locations=@av []
+
+[org/gnome/software]
+check-timestamp=int64 1779325058
+first-run=false
+flatpak-purge-timestamp=int64 1779335067
+
+[org/gnome/tweaks]
+show-extensions-notice=false
+
+[org/gtk/gtk4/settings/file-chooser]
+show-hidden=false
+sort-directories-first=false
+
+[org/gtk/settings/file-chooser]
+date-format='regular'
+location-mode='path-bar'
+show-hidden=false
+show-size-column=true
+show-type-column=true
+sidebar-width=189
+sort-column='name'
+sort-directories-first=false
+sort-order='ascending'
+type-format='category'
+window-position=(26, 23)
+window-size=(1184, 721)

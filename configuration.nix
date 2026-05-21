@@ -8,22 +8,12 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./modules/hardware.nix
+    ./modules/gnome.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  boot.kernelPatches = [
-    {
-      name = "Bluetooth: btmtk: accept too short WMT FUNC_CTRL events";
-      patch = pkgs.fetchurl {
-        url = "https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.git/patch/?id=162b1adeb057d28ad84fd8a03f3c50cf08db5c62";
-        hash = "sha256-ij0hQmC0U++AdXWQy6nycnDe6z4yaMoQIrSiLal5DHc=";
-      };
-    }
-  ];
 
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
@@ -43,16 +33,7 @@
     LC_TIME = "en_IN";
   };
 
-  services.xserver.enable = true;
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
-
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
-  services.printing.enable = true;
+  services.printing.enable = false;
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -60,36 +41,6 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-  };
-
-  services.udev.extraRules = ''
-    SUBSYSTEM=="pci", DRIVER=="xhci_hcd", ATTR{power/wakeup}="disabled"
-  '';
-
-  systemd.services.disable-gpp-wakeup = {
-    path = [
-      pkgs.gnugrep
-      pkgs.coreutils
-    ];
-    description = "Disable GPP/GP PCIe bridge wakeup sources";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "systemd-udevd.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart =
-        let
-          script = pkgs.writeShellScript "disable-gpp-wakeup" ''
-            for dev in GPP1 GPP6 GPP7 GP19; do
-              if grep -q "^''${dev}.*enabled" /proc/acpi/wakeup; then
-                echo "$dev" > /proc/acpi/wakeup
-                echo "disabled $dev"
-              fi
-            done
-          '';
-        in
-        "${script}";
-    };
   };
 
   services.flatpak.enable = true;
@@ -105,19 +56,6 @@
     shell = pkgs.fish;
   };
 
-  hardware.graphics = {
-    enable = true;
-    extraPackages = with pkgs; [
-      mesa
-      vulkan-tools
-      vulkan-loader
-      vulkan-validation-layers
-      libva
-      libva-utils
-      mesa.opencl
-    ];
-  };
-
   programs.firefox.enable = true;
   programs.dconf.enable = true;
   programs.fish.enable = true;
@@ -125,12 +63,6 @@
   nixpkgs.config.allowUnfree = true;
   fonts.fontDir.enable = true;
 
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-  };
-
-  # Minimal system-wide baseline
   environment.systemPackages = with pkgs; [
     vim
     wget
@@ -142,10 +74,6 @@
     nixd
     package-version-server
   ];
-
-  environment.variables = {
-    AMD_VULKAN_ICD = "RADV";
-  };
 
   fonts.packages = with pkgs; [
     jetbrains-mono
