@@ -79,6 +79,7 @@
     nil
     nixd
     package-version-server
+    rust-analyzer
     stdenv.cc
     gnumake
 
