@@ -12,8 +12,15 @@
     ./modules/gnome.nix
   ];
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi = {
+      canTouchEfiVariables = true;
+    };
+    grub = {
+      timeout = 1;
+    };
+  };
 
   boot.kernelParams = [
     "amdgpu.dcdebugmask=0x10"
@@ -63,9 +70,29 @@
     shell = pkgs.fish;
   };
 
+  fileSystems."/home/anurag/Downloads" = {
+    device = "/data/Downloads";
+    options = [
+      "bind"
+      "nofail"
+    ];
+  };
+  fileSystems."/home/anurag/Documents" = {
+    device = "/data/Documents";
+    options = [
+      "bind"
+      "nofail"
+    ];
+  };
+
   programs.firefox.enable = true;
   programs.dconf.enable = true;
   programs.fish.enable = true;
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
 
   nixpkgs.config.allowUnfree = true;
   fonts.fontDir.enable = true;
@@ -82,6 +109,8 @@
     rust-analyzer
     stdenv.cc
     gnumake
+    xdg-utils
+    libnotify
 
     cloudflare-warp
   ];
