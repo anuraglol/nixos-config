@@ -17,9 +17,7 @@
     efi = {
       canTouchEfiVariables = true;
     };
-    grub = {
-      timeout = 1;
-    };
+    timeout = 1;
   };
 
   boot.kernelParams = [
@@ -92,8 +90,13 @@
   xdg.portal = {
     enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    xdgOpenUsePortal = true;
   };
-
+  qt = {
+    enable = true;
+    platformTheme = "gnome";
+    style = "adwaita-dark";
+  };
   nixpkgs.config.allowUnfree = true;
   fonts.fontDir.enable = true;
 

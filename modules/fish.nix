@@ -7,31 +7,10 @@
     shellAliases = {
       cd = "z";
       ff = "fastfetch";
+      zed = "zeditor . && exit";
+      zede = "zeditor . &";
 
-      # ni = "ni";
-      # npi = "ni";
-      # "npm install" = "ni";
-      # "npm i" = "ni";
-
-      # "npm install -g" = "nig";
-      # "npm i -g" = "nig";
-
-      # "npm install -D" = "nid";
-      # "npm i -D" = "nid";
-      # "npm install --save-dev" = "nid";
-
-      # "npm uninstall" = "nun";
-      # "npm rm" = "nun";
-
-      # "npm run" = "nr";
-      # "npm run dev" = "nr dev";
-      # "npm run build" = "nr build";
-      # "npm test" = "nt";
-      # "npm t" = "nt";
-
-      # npx = "nlx";
-
-      # "npm update" = "nu";
+      npx = "nlx";
     };
 
     interactiveShellInit = ''

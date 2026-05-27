@@ -13,6 +13,7 @@
     ./modules/ghostty.nix
     ./modules/fastfetch.nix
     ./modules/zed-editor.nix
+    ./modules/kitty.nix
   ];
 
   home.username = "anurag";

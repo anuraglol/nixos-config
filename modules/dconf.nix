@@ -116,8 +116,8 @@
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
       binding = "<Super>Return";
-      command = "ghostty";
-      name = "ghostty";
+      command = "kitty";
+      name = "kitty";
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
       binding = "<Super>z";
@@ -144,7 +144,6 @@
         "blur-my-shell@aunetx"
         "caffeine@patapon.info"
         "clipboard-indicator@tudmotu.com"
-        "just-perfection-desktop@just-perfection"
       ];
     };
     "org/gnome/shell/extensions/blur-my-shell/appfolder" = {
@@ -176,28 +175,6 @@
     };
     "org/gnome/shell/extensions/clipboard-indicator" = {
       toggle-menu = [ "<Super>v" ];
-    };
-    "org/gnome/shell/extensions/just-perfection" = {
-      activities-button = true;
-      animation = 4;
-      calendar = false;
-      clock-menu = true;
-      dash = true;
-      dash-separator = true;
-      double-super-to-appgrid = false;
-      events-button = false;
-      keyboard-layout = true;
-      overlay-key = true;
-      panel = true;
-      panel-notification-icon = true;
-      power-icon = true;
-      ripple-box = true;
-      search = true;
-      switcher-popup-delay = false;
-      weather = false;
-      window-picker-icon = true;
-      window-preview-caption = true;
-      world-clock = false;
     };
     "org/gnome/shell/keybindings" = {
       screenshot = [ "<Shift><Super>s" ];

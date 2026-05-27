@@ -7,7 +7,7 @@
     settings = {
       font-family = "JetBrains Mono";
       font-family-bold = "JetBrains Mono Bold";
-      font-size = 12;
+      font-size = 11;
 
       window-padding-x = 10;
       window-padding-y = 10;

@@ -15,6 +15,8 @@
     opencode
     github-copilot-cli
     hey
+    webkitgtk_6_0
+    proton-authenticator
 
     mpv
     vlc
@@ -29,6 +31,7 @@
     bun
     go
     gh
+    wails
 
     gnomeExtensions.blur-my-shell
     gnomeExtensions.caffeine
