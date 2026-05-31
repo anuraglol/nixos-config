@@ -1,7 +1,14 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  swapDevices = lib.mkForce [
+    {
+      device = "/var/lib/swapfile";
+      size = 32 * 1024;
+    }
+  ];
 
   boot.kernelPatches = [
     {
