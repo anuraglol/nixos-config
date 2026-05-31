@@ -9,8 +9,10 @@
       ff = "fastfetch";
       zed = "zeditor . && exit";
       zede = "zeditor . &";
-
       npx = "nlx";
+      please = "sudo $history[1]";
+      cl = "clear";
+      sys-rebuild = "sudo nixos-rebuild switch --flake ~/Documents/nixos-config#neko";
     };
 
     interactiveShellInit = ''

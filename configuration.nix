@@ -27,7 +27,7 @@
 
   hardware.amdgpu.initrd.enable = true;
 
-  networking.hostName = "nixos";
+  networking.hostName = "neko";
   networking.networkmanager.enable = true;
 
   time.timeZone = "Asia/Kolkata";
@@ -128,6 +128,54 @@
     "nix-command"
     "flakes"
   ];
+
+  nix = {
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than-7d";
+    };
+  };
+
+  security.sudo = {
+    enable = true;
+    extraRules = [
+      {
+        users = [ "anurag" ];
+        commands = [
+          {
+            command = "${pkgs.systemd}/bin/reboot";
+            options = [ "NOPASSWD" ];
+          }
+          {
+            command = "${pkgs.systemd}/bin/shutdown";
+            options = [ "NOPASSWD" ];
+          }
+          {
+            command = "${pkgs.systemd}/bin/poweroff";
+            options = [ "NOPASSWD" ];
+          }
+        ];
+      }
+    ];
+  };
+
+  services.keyd = {
+    enable = true;
+    keyboards = {
+      default = {
+        ids = [ "0001:0001:09b4e68d" ];
+        settings = {
+          main = {
+            "leftshift+leftmeta+f23" = "layer(meta)";
+
+            "capslock" = "escape";
+            "escape" = "capslock";
+          };
+        };
+      };
+    };
+  };
 
   system.stateVersion = "25.11";
 }

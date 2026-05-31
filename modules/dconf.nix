@@ -2,6 +2,10 @@
 
 {
   dconf.settings = {
+    "org/gnome/desktop/sound" = {
+      event-sounds = false;
+      feedback-sound = false;
+    };
     "org/gnome/Console" = {
       last-window-maximised = true;
     };
@@ -60,7 +64,7 @@
           "us"
         ])
       ];
-      xkb-options = [ "caps:swapescape" ];
+      # xkb-options = [ "caps:swapescape" ];
     };
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
@@ -133,6 +137,11 @@
       binding = "<Super>c";
       command = "zeditor /home/anurag/Documents/nixos-config";
       name = "nix-config";
+    };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom4" = {
+      binding = "<Super>/";
+      command = "firefox";
+      name = "firefox";
     };
     "org/gnome/settings-daemon/plugins/power" = {
       power-button-action = "nothing";

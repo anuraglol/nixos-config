@@ -33,7 +33,7 @@
     in
     {
       nixosConfigurations = {
-        nixos = nixpkgs.lib.nixosSystem {
+        neko = nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
             ./configuration.nix
@@ -45,7 +45,7 @@
 
               home-manager.backupFileExtension = "backup";
 
-	      home-manager.extraSpecialArgs = { inherit unstable-pkgs; };
+              home-manager.extraSpecialArgs = { inherit unstable-pkgs; };
 
               # Point this directly to your separate home.nix config file
               home-manager.users.anurag = import ./home.nix;
