@@ -114,6 +114,7 @@
     gnumake
     xdg-utils
     libnotify
+    gtop
 
     cloudflare-warp
   ];

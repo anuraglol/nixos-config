@@ -16,6 +16,7 @@
     github-copilot-cli
     hey
     webkitgtk_6_0
+    age
 
     mpv
     vlc
@@ -32,10 +33,12 @@
     gh
     wails
     redis
+    python3
 
     gnomeExtensions.blur-my-shell
     gnomeExtensions.caffeine
     gnomeExtensions.clipboard-indicator
     gnomeExtensions.just-perfection
+    gnomeExtensions.system-monitor
   ];
 }
