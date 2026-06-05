@@ -115,20 +115,40 @@
     xdg-utils
     libnotify
     gtop
-
     cloudflare-warp
   ];
 
   fonts.packages = with pkgs; [
     jetbrains-mono
+    fira-code
   ];
 
   services.cloudflare-warp.enable = true;
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  services.stubby = {
+    enable = true;
+    settings = pkgs.stubby.passthru.settingsExample // {
+      upstream_recursive_servers = [
+        {
+          address_data = "1.1.1.1";
+          tls_auth_name = "cloudflare-dns.com";
+        }
+        {
+          address_data = "1.0.0.1";
+          tls_auth_name = "cloudflare-dns.com";
+        }
+      ];
+    };
+  };
+
+  networking.nameservers = [ "127.0.0.1" ];
+
+  nix.settings = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+  };
 
   nix = {
     gc = {
@@ -136,6 +156,11 @@
       dates = "weekly";
       options = "--delete-older-than-7d";
     };
+  };
+
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
   };
 
   security.sudo = {

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, unstable-pkgs, ... }:
 
 {
   home.packages = with pkgs; [
@@ -25,6 +25,7 @@
     bibata-cursors
     obs-studio
     ffmpeg
+    slack
 
     nodejs
     pnpm
@@ -34,11 +35,17 @@
     wails
     redis
     python3
+    air
+    process-compose
+    mise
+    openssl
 
     gnomeExtensions.blur-my-shell
     gnomeExtensions.caffeine
     gnomeExtensions.clipboard-indicator
     gnomeExtensions.just-perfection
     gnomeExtensions.system-monitor
+
+    unstable-pkgs.claude-code
   ];
 }
