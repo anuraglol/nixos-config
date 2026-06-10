@@ -64,7 +64,6 @@
           "us"
         ])
       ];
-      # xkb-options = [ "caps:swapescape" ];
     };
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
@@ -167,7 +166,7 @@
       style-dash-to-dock = 0;
     };
     "org/gnome/shell/extensions/blur-my-shell/panel" = {
-      blur = false;
+      blur = true;
       brightness = 0.6;
       corner-radius = 0;
       sigma = 30;

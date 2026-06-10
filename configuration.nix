@@ -28,7 +28,6 @@
   hardware.amdgpu.initrd.enable = true;
 
   networking.hostName = "neko";
-  networking.networkmanager.enable = true;
 
   time.timeZone = "Asia/Kolkata";
   i18n.defaultLocale = "en_IN";
@@ -56,6 +55,18 @@
   };
 
   services.flatpak.enable = true;
+  networking = {
+    networkmanager = {
+      enable = true;
+      dns = "default";
+    };
+    # nameservers = [
+    #   "1.1.1.1"
+    #   "8.8.8.8"
+    # ];
+  };
+
+  services.resolved.enable = false;
 
   users.users.anurag = {
     isNormalUser = true;
@@ -87,6 +98,11 @@
   programs.dconf.enable = true;
   programs.fish.enable = true;
 
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    # Add any common missing libraries here if the app crashes later
+  ];
+
   xdg.portal = {
     enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
@@ -116,6 +132,8 @@
     libnotify
     gtop
     cloudflare-warp
+    uv
+    devenv
   ];
 
   fonts.packages = with pkgs; [
@@ -124,24 +142,6 @@
   ];
 
   services.cloudflare-warp.enable = true;
-
-  services.stubby = {
-    enable = true;
-    settings = pkgs.stubby.passthru.settingsExample // {
-      upstream_recursive_servers = [
-        {
-          address_data = "1.1.1.1";
-          tls_auth_name = "cloudflare-dns.com";
-        }
-        {
-          address_data = "1.0.0.1";
-          tls_auth_name = "cloudflare-dns.com";
-        }
-      ];
-    };
-  };
-
-  networking.nameservers = [ "127.0.0.1" ];
 
   nix.settings = {
     experimental-features = [

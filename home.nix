@@ -14,6 +14,7 @@
     ./modules/fastfetch.nix
     ./modules/zed-editor.nix
     ./modules/kitty.nix
+    ./modules/git.nix
   ];
 
   home.username = "anurag";

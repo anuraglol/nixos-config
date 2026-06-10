@@ -17,6 +17,8 @@
     hey
     webkitgtk_6_0
     age
+    quickshell
+    nh
 
     mpv
     vlc
