@@ -81,6 +81,7 @@
 
   fileSystems."/home/anurag/Downloads" = {
     device = "/data/Downloads";
+    fsType = "ext4";
     options = [
       "bind"
       "nofail"
@@ -88,6 +89,7 @@
   };
   fileSystems."/home/anurag/Documents" = {
     device = "/data/Documents";
+    fsType = "ext4";
     options = [
       "bind"
       "nofail"
@@ -102,6 +104,7 @@
   programs.nix-ld.libraries = with pkgs; [
     # Add any common missing libraries here if the app crashes later
   ];
+  programs.hyprland.enable = true;
 
   xdg.portal = {
     enable = true;

@@ -3,14 +3,14 @@
 
   inputs = {
     # Core stable system channel
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
 
     # Extra channel for un-prefixed unstable apps (like zed-editor)
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Explicitly track the matching release branch for Home Manager
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
