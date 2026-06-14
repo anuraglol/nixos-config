@@ -10,7 +10,12 @@
     ./hardware-configuration.nix
     ./modules/hardware.nix
     ./modules/gnome.nix
+    # ./modules/dms.nix
   ];
+
+  nix.extraOptions = ''
+    !include /etc/nix/github-token.conf
+  '';
 
   boot.loader = {
     systemd-boot.enable = true;
@@ -104,7 +109,6 @@
   programs.nix-ld.libraries = with pkgs; [
     # Add any common missing libraries here if the app crashes later
   ];
-  programs.hyprland.enable = true;
 
   xdg.portal = {
     enable = true;
@@ -137,12 +141,29 @@
     cloudflare-warp
     uv
     devenv
+    wl-clipboard
   ];
 
   fonts.packages = with pkgs; [
     jetbrains-mono
     fira-code
   ];
+
+  systemd.services.bluetooth-suspend-fix = {
+    description = "Stop Bluetooth before suspend to prevent driver deadlock";
+    before = [ "sleep.target" ];
+    after = [ "suspend.target" ];
+    wantedBy = [
+      "sleep.target"
+      "suspend.target"
+    ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.util-linux}/bin/rfkill block bluetooth";
+      ExecStop = "${pkgs.util-linux}/bin/rfkill unblock bluetooth";
+    };
+  };
 
   services.cloudflare-warp.enable = true;
 

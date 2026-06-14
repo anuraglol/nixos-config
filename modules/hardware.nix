@@ -1,7 +1,20 @@
 { pkgs, lib, ... }:
 
+let
+in
 {
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackagesFor (
+    pkgs.linux_latest.override {
+      argsOverride = rec {
+        version = "7.0.10";
+        modDirVersion = version;
+        src = pkgs.fetchurl {
+          url = "https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-${version}.tar.xz";
+          sha256 = "sha256-CUl362LCDj0ZOf6BqSlYofmH8zlEblMvqGljsoBOMtw=";
+        };
+      };
+    }
+  );
 
   swapDevices = lib.mkForce [
     {
@@ -9,24 +22,6 @@
       size = 16 * 1024;
     }
   ];
-
-  # boot.kernelPatches =
-  #   let
-  #     # The fix is officially built into 7.0.10+ upstream
-  #     needsBtfixed = lib.versionOlder pkgs.linuxPackages.kernel.version "7.0.10";
-  #   in
-  #   if !needsBtfixed then
-  #     [ ]
-  #   else
-  #     [
-  #       {
-  #         name = "Bluetooth: btmtk: accept too short WMT FUNC_CTRL events";
-  #         patch = pkgs.fetchurl {
-  #           url = "https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.git/patch/?id=162b1adeb057d28ad84fd8a03f3c50cf08db5c62";
-  #           hash = "sha256-ij0hQmC0U++AdXWQy6nycnDe6z4yaMoQIrSiLal5DHc=";
-  #         };
-  #       }
-  #     ];
 
   services.udev.extraRules = ''
     SUBSYSTEM=="pci", DRIVER=="xhci_hcd", ATTR{power/wakeup}="disabled"

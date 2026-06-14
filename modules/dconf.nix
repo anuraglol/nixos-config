@@ -5,6 +5,7 @@
     "org/gnome/desktop/sound" = {
       event-sounds = false;
       feedback-sound = false;
+      theme-name = "";
     };
     "org/gnome/Console" = {
       last-window-maximised = true;
@@ -67,8 +68,8 @@
     };
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
-      cursor-size = 20;
       cursor-theme = "Bibata-Modern-Ice";
+      cursor-size = 20;
       document-font-name = "JetBrains Mono 12";
       enable-animations = true;
       font-hinting = "full";
@@ -113,6 +114,8 @@
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/"
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/"
+        "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom4/"
+        "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom5/"
       ];
       home = [ "<Super>e" ];
       www = [ "<Super>b" ];
@@ -142,6 +145,16 @@
       command = "firefox";
       name = "firefox";
     };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom5" = {
+      binding = "<Super>space";
+      command = "vicinae toggle";
+      name = "vicinae";
+    };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom6" = {
+      binding = "<Super>V";
+      command = "vicinae vicinae://launch/clipboard/history";
+      name = "clipboard";
+    };
     "org/gnome/settings-daemon/plugins/power" = {
       power-button-action = "nothing";
     };
@@ -152,6 +165,7 @@
         "blur-my-shell@aunetx"
         "caffeine@patapon.info"
         "clipboard-indicator@tudmotu.com"
+        "vicinae@dagimg-dot"
       ];
     };
     "org/gnome/shell/extensions/blur-my-shell/appfolder" = {
@@ -182,7 +196,7 @@
       user-enabled = true;
     };
     "org/gnome/shell/extensions/clipboard-indicator" = {
-      toggle-menu = [ "<Super>v" ];
+      # toggle-menu = [ "<Super>v" ];
     };
     "org/gnome/shell/keybindings" = {
       screenshot = [ "<Shift><Super>s" ];

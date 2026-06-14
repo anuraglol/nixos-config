@@ -2,7 +2,9 @@
   config,
   pkgs,
   unstable-pkgs,
+  vicinae,
   lib,
+  inputs,
   ...
 }:
 {
@@ -15,6 +17,7 @@
     ./modules/zed-editor.nix
     ./modules/kitty.nix
     ./modules/git.nix
+    vicinae.homeManagerModules.default
   ];
 
   home.username = "anurag";
@@ -22,27 +25,30 @@
   home.stateVersion = "26.05";
 
   programs.home-manager.enable = true;
-  # programs.kitty.enable = true; # required for the default Hyprland config
-  # wayland.windowManager.hyprland.enable = true; # enable Hyprland
-  # home.sessionVariables.NIXOS_OZONE_WL = "1";
+  programs.kitty.enable = true;
+  home.sessionVariables.NIXOS_OZONE_WL = "1";
 
-  # wayland.windowManager.hyprland.settings = {
-  #   "$mod" = "SUPER";
-  #   bind = [
-  #     "$mod, Q, exec, kitty"
-  #     "$mod, F, exec, firefox"
-  #   ]
-  #   ++ (builtins.concatLists (
-  #     builtins.genList (
-  #       i:
-  #       let
-  #         ws = i + 1;
-  #       in
-  #       [
-  #         "$mod, code:1${toString i}, workspace, ${toString ws}"
-  #         "$mod SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
-  #       ]
-  #     ) 9
-  #   ));
-  # };
+  services.vicinae = {
+    enable = true;
+    package = pkgs.vicinae;
+    systemd = {
+      enable = true;
+      autoStart = true;
+      environment = {
+        USE_LAYER_SHELL = 1;
+      };
+    };
+    settings = {
+      pop_to_root_on_close = true;
+      theme = {
+        dark = {
+          name = "tokyo-night";
+          icon_theme = "default";
+        };
+      };
+      launcher_window = {
+        opacity = 0.98;
+      };
+    };
+  };
 }

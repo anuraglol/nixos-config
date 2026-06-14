@@ -8,7 +8,6 @@
     fzf
     zoxide
     tmux
-    wl-clipboard
     htop
     unzip
     p7zip
@@ -19,6 +18,8 @@
     age
     quickshell
     nh
+    impression
+    gpu-screen-recorder
 
     mpv
     vlc
@@ -47,6 +48,7 @@
     gnomeExtensions.clipboard-indicator
     gnomeExtensions.just-perfection
     gnomeExtensions.system-monitor
+    gnomeExtensions.vicinae
 
     unstable-pkgs.claude-code
   ];
