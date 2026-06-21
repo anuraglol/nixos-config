@@ -15,6 +15,7 @@
       sys-rebuild = "sudo nixos-rebuild switch --flake ~/Documents/nixos-config#neko";
       pc = "nix run nixpkgs#process-compose -- -f process-compose.yaml";
       fupdate = "nix flake update --flake ~/Documents/nixos-config";
+      tnux = "tmux -u";
     };
 
     interactiveShellInit = ''

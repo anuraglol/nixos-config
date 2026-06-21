@@ -20,6 +20,7 @@
     nh
     impression
     gpu-screen-recorder
+    killport
 
     mpv
     vlc

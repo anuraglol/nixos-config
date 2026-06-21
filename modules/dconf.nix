@@ -99,6 +99,7 @@
       toggle-fullscreen = [ "<Super>f" ];
     };
     "org/gnome/mutter" = {
+      overlay-key = "";
       experimental-features = [ "scale-monitor-framebuffer" ];
     };
     "org/gnome/nautilus/preferences" = {

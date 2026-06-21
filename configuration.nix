@@ -61,17 +61,41 @@
 
   services.flatpak.enable = true;
   networking = {
+    nameservers = [
+      "127.0.0.1"
+      "::1"
+    ];
     networkmanager = {
       enable = true;
-      dns = "default";
+      dns = "none";
     };
-    # nameservers = [
-    #   "1.1.1.1"
-    #   "8.8.8.8"
-    # ];
   };
 
   services.resolved.enable = false;
+
+  services.stubby = {
+    enable = true;
+    settings = pkgs.stubby.passthru.settingsExample // {
+      upstream_recursive_servers = [
+        {
+          address_data = "1.1.1.1";
+          tls_auth_name = "cloudflare-dns.com";
+        }
+        {
+          address_data = "1.0.0.1";
+          tls_auth_name = "cloudflare-dns.com";
+        }
+        {
+          address_data = "8.8.8.8";
+          tls_auth_name = "dns.google";
+        }
+        {
+          address_data = "8.8.4.4";
+          tls_auth_name = "dns.google";
+        }
+      ];
+    };
+  };
 
   users.users.anurag = {
     isNormalUser = true;
@@ -104,6 +128,7 @@
   programs.firefox.enable = true;
   programs.dconf.enable = true;
   programs.fish.enable = true;
+  programs.yazi.enable = true;
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
@@ -142,6 +167,7 @@
     uv
     devenv
     wl-clipboard
+    steam-run
   ];
 
   fonts.packages = with pkgs; [
