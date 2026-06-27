@@ -21,6 +21,9 @@
     impression
     gpu-screen-recorder
     killport
+    localsend
+    eza
+    ripgrep
 
     mpv
     vlc
@@ -36,7 +39,6 @@
     bun
     go
     gh
-    wails
     redis
     python3
     air
@@ -52,5 +54,6 @@
     gnomeExtensions.vicinae
 
     unstable-pkgs.claude-code
+    mcp-nixos
   ];
 }

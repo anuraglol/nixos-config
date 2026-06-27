@@ -167,6 +167,7 @@
         "caffeine@patapon.info"
         "clipboard-indicator@tudmotu.com"
         "vicinae@dagimg-dot"
+        "system-monitor@gnome-shell-extensions.gcampax.github.com"
       ];
     };
     "org/gnome/shell/extensions/blur-my-shell/appfolder" = {
@@ -197,7 +198,7 @@
       user-enabled = true;
     };
     "org/gnome/shell/extensions/clipboard-indicator" = {
-      # toggle-menu = [ "<Super>v" ];
+      toggle-menu = [ "<Super>v" ];
     };
     "org/gnome/shell/keybindings" = {
       screenshot = [ "<Shift><Super>s" ];

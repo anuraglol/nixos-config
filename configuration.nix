@@ -13,9 +13,9 @@
     # ./modules/dms.nix
   ];
 
-  nix.extraOptions = ''
-    !include /etc/nix/github-token.conf
-  '';
+  # nix.extraOptions = ''
+  #   !include /etc/nix/github-token.conf
+  # '';
 
   boot.loader = {
     systemd-boot.enable = true;
@@ -243,8 +243,7 @@
         ids = [ "0001:0001:09b4e68d" ];
         settings = {
           main = {
-            "leftshift+leftmeta+f23" = "layer(meta)";
-
+            "f23+leftshift+leftmeta" = "layer(meta)";
             "capslock" = "escape";
             "escape" = "capslock";
           };
