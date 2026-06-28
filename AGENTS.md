@@ -6,13 +6,13 @@ This is a **NixOS flake** (system configuration), not a software project. There 
 
 ## Architecture
 
-| Entrypoint | Role |
-|------------|------|
-| `flake.nix` | Defines the system `neko` (hostname), wires `nixpkgs`, `nixpkgs-unstable`, and `home-manager` inputs. |
-| `configuration.nix` | System-level configuration (boot, networking, services, filesystem mounts, users, packages). |
-| `home.nix` | Home Manager entrypoint. Imports modules from `modules/`. |
-| `modules/` | Feature modules: `hardware.nix`, `gnome.nix`, `packages.nix`, `dconf.nix`, `fish.nix`, `ghostty.nix`, `fastfetch.nix`, `zed-editor.nix`, `kitty.nix`, `git.nix`. |
-| `hardware-configuration.nix` | **Auto-generated** by `nixos-generate-config`. Do not edit. Modify `configuration.nix` or `modules/hardware.nix` instead. |
+| Entrypoint                   | Role                                                                                                                                              |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `flake.nix`                  | Defines the system `neko` (hostname), wires `nixpkgs`, `nixpkgs-unstable`, and `home-manager` inputs.                                             |
+| `configuration.nix`          | System-level configuration (boot, networking, services, filesystem mounts, users, packages).                                                      |
+| `home.nix`                   | Home Manager entrypoint. Imports modules from `modules/`.                                                                                         |
+| `modules/`                   | Feature modules: `hardware.nix`, `gnome.nix`, `packages.nix`, `dconf.nix`, `fish.nix`, `fastfetch.nix`, `zed-editor.nix`, `kitty.nix`, `git.nix`. |
+| `hardware-configuration.nix` | **Auto-generated** by `nixos-generate-config`. Do not edit. Modify `configuration.nix` or `modules/hardware.nix` instead.                         |
 
 ## Channels
 

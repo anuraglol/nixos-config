@@ -12,7 +12,6 @@
     ./modules/packages.nix
     ./modules/dconf.nix
     ./modules/fish.nix
-    ./modules/ghostty.nix
     ./modules/fastfetch.nix
     ./modules/zed-editor.nix
     ./modules/kitty.nix
