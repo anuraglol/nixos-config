@@ -183,16 +183,6 @@
     fira-code
   ];
 
-  # MediaTek USB Bluetooth (hci0) deadlocks the s2idle resume path unless it is
-  # rfkill-blocked before suspend, causing the laptop to hang and never wake.
-  # Hook directly into systemd-suspend (not sleep.target) to avoid the ordering
-  # cycle that previously caused systemd to silently drop the block job.
-  powerManagement.powerDownCommands = ''
-    ${pkgs.util-linux}/bin/rfkill block bluetooth
-  '';
-  powerManagement.resumeCommands = ''
-    ${pkgs.util-linux}/bin/rfkill unblock bluetooth
-  '';
 
   services.cloudflare-warp.enable = true;
 
