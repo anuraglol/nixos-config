@@ -97,6 +97,14 @@
     };
   };
 
+  services.openssh = {
+    enable = true;
+    settings = {
+      PermitRootLogin = "no";
+      PasswordAuthentication = true;
+    };
+  };
+
   users.users.anurag = {
     isNormalUser = true;
     description = "anurag";
@@ -175,21 +183,16 @@
     fira-code
   ];
 
-  systemd.services.bluetooth-suspend-fix = {
-    description = "Stop Bluetooth before suspend to prevent driver deadlock";
-    before = [ "sleep.target" ];
-    after = [ "suspend.target" ];
-    wantedBy = [
-      "sleep.target"
-      "suspend.target"
-    ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = "${pkgs.util-linux}/bin/rfkill block bluetooth";
-      ExecStop = "${pkgs.util-linux}/bin/rfkill unblock bluetooth";
-    };
-  };
+  # MediaTek USB Bluetooth (hci0) deadlocks the s2idle resume path unless it is
+  # rfkill-blocked before suspend, causing the laptop to hang and never wake.
+  # Hook directly into systemd-suspend (not sleep.target) to avoid the ordering
+  # cycle that previously caused systemd to silently drop the block job.
+  powerManagement.powerDownCommands = ''
+    ${pkgs.util-linux}/bin/rfkill block bluetooth
+  '';
+  powerManagement.resumeCommands = ''
+    ${pkgs.util-linux}/bin/rfkill unblock bluetooth
+  '';
 
   services.cloudflare-warp.enable = true;
 
