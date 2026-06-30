@@ -28,6 +28,21 @@
   programs.kitty.enable = true;
   home.sessionVariables.NIXOS_OZONE_WL = "1";
 
+  # SSH agent. Under GNOME, gnome-keyring was the SSH agent and auto-unlocked
+  # the (passphrase-protected) key, so git-over-ssh "just worked". Sway has no
+  # such thing, leaving SSH_AUTH_SOCK empty and the locked key unusable
+  # (git push -> "Permission denied (publickey)"). Run a plain ssh-agent as a
+  # user systemd service instead — it sets SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/ssh-agent
+  # (a fixed path, picked up by fish via home.sessionVariables) and starts with
+  # the user manager, so it isn't subject to the WAYLAND_DISPLAY startup race.
+  # addKeysToAgent makes ssh cache the key on first use (one passphrase prompt
+  # per login), matching the old auto-unlock feel.
+  services.ssh-agent.enable = true;
+  programs.ssh = {
+    enable = true;
+    addKeysToAgent = "yes";
+  };
+
   services.vicinae = {
     enable = true;
     package = pkgs.vicinae;
