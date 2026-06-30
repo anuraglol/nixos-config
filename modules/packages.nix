@@ -27,8 +27,11 @@
     mpv
     vlc
     qbittorrent
-    gnome-tweaks
     bibata-cursors
+
+    nautilus
+    snapshot
+    adwaita-icon-theme
     obs-studio
     ffmpeg
     slack
@@ -44,13 +47,6 @@
     process-compose
     mise
     openssl
-
-    gnomeExtensions.blur-my-shell
-    gnomeExtensions.caffeine
-    gnomeExtensions.clipboard-indicator
-    gnomeExtensions.just-perfection
-    gnomeExtensions.system-monitor
-    gnomeExtensions.vicinae
 
     unstable-pkgs.claude-code
     mcp-nixos

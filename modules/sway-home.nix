@@ -1,20 +1,10 @@
 { pkgs, lib, ... }:
 
-# Minimal Sway config (home-manager). Mostly stock defaults; the main
-# customisation is porting your GNOME super-key shortcuts (see modules/dconf.nix)
-# so muscle memory carries over. Defaults still in effect:
-#   Super+h/j/k/l (+Shift to move) navigate, Super+1..9 workspaces,
-#   Super+r resize mode, Super+Shift+e exit, Super+Shift+c reload,
-#   Super+drag to move/resize floating windows.
 let
-  mod = "Mod4"; # Super / Windows key
+  mod = "Mod4";
   terminal = "kitty";
-  # rose-pine hyprlock (config in programs.hyprlock below) — clock + date + input
-  # field. hyprlock draws via ext-session-lock-v1, which sway supports, so it
-  # runs fine outside Hyprland. swayidle spawns it async, so no fork flag needed.
   lock = "${pkgs.hyprlock}/bin/hyprlock";
 
-  # Rosé Pine palette
   base = "#191724";
   surface = "#1f1d2e";
   overlay = "#26233a";
@@ -27,11 +17,6 @@ let
   foam = "#9ccfd8";
   gold = "#f6c177";
 
-  # Build a Nerd Font glyph from its hex codepoint. Embedding the raw glyph
-  # bytes in this file is unreliable (private-use chars get stripped), so we
-  # decode them from JSON \u escapes instead. Handles both BMP (one \u) and
-  # astral codepoints (a UTF-16 surrogate pair) — the latter covers the
-  # Material-Design Nerd Font icons at U+F0000+ that omarchy uses.
   icon =
     let
       imod = a: b: a - (a / b) * b;
@@ -73,7 +58,6 @@ let
       in
       builtins.fromJSON ''"\u${toHex4 hi}\u${toHex4 lo}"'';
 
-  # screenshots -> clipboard, with a confirmation notification.
   shotFull = pkgs.writeShellScript "shot-full" ''
     ${pkgs.grim}/bin/grim - | ${pkgs.wl-clipboard}/bin/wl-copy \
       && ${pkgs.libnotify}/bin/notify-send "Screenshot" "Full screen copied to clipboard"
@@ -85,16 +69,11 @@ let
       && ${pkgs.libnotify}/bin/notify-send "Screenshot" "Region copied to clipboard"
   '';
 
-  # wifi / bluetooth handled by vicinae extensions (clicked from waybar).
-  # launch/ deeplinks jump straight to the specific command.
   wifiMenu = "vicinae vicinae://launch/@dagimg-dot/store.vicinae.wifi-commander/scan-wifi";
   btMenu = "vicinae vicinae://launch/@Gelei/store.vicinae.bluetooth/devices";
 
-  # volume/brightness OSD via swayosd (server enabled below). The client tells
-  # the running server to apply the change and show its popup.
   swayosd-client = "${pkgs.swayosd}/bin/swayosd-client";
 
-  # swayosd stylesheet — omarchy's layout, rose-pine colours, square corners.
   swayosdStyle = pkgs.writeText "swayosd-style.css" ''
     window {
       border-radius: 0;
@@ -117,7 +96,6 @@ let
       border-radius: 0;
     }
 
-    /* unfilled track + filled portion */
     progressbar trough {
       background-color: ${highlightMed};
     }
@@ -126,12 +104,6 @@ let
     }
   '';
 
-  # night light = manual wlsunset toggle (no geo schedule — on when you want,
-  # off when you want). Holding a *constant* warm temp is the trick: with no
-  # lat/long wlsunset stays in "always day" mode and parks the screen at the
-  # high temp, so high=3500 just above low=3499 gives a steady 3500 K. (With
-  # geo it would only warm after sunset, which is why it seemed broken.)
-  # Pokes waybar (RTMIN+8) to refresh the icon.
   nightToggle = pkgs.writeShellScript "nightlight-toggle" ''
     if ${pkgs.procps}/bin/pgrep -x wlsunset >/dev/null; then
       ${pkgs.procps}/bin/pkill -x wlsunset
@@ -141,8 +113,6 @@ let
     ${pkgs.procps}/bin/pkill -RTMIN+8 waybar || true
   '';
 
-  # JSON output so the active (warm) state can be coloured via the .active CSS
-  # class. text comes from the icon helper (avoids raw glyph bytes in-file).
   nightStatus = pkgs.writeShellScript "nightlight-status" ''
     if ${pkgs.procps}/bin/pgrep -x wlsunset >/dev/null; then
       printf '{"text":"%s","class":"active","tooltip":"Night light on"}\n' '${icon "f186"}'
@@ -151,7 +121,6 @@ let
     fi
   '';
 
-  # move a window to workspace N *and follow it there* (GNOME behaviour)
   moveFollow = builtins.listToAttrs (
     map
       (n: {
@@ -175,8 +144,8 @@ in
 {
   wayland.windowManager.sway = {
     enable = true;
-    package = null; # use the system sway from programs.sway (modules/sway.nix)
-    checkConfig = false; # config check can't run a wrapped/null package at build
+    package = null;
+    checkConfig = false;
 
     config = {
       modifier = mod;
@@ -188,15 +157,11 @@ in
         size = 11.5;
       };
 
-      # Title bar always on; side borders only appear when a workspace has more
-      # than one window (smart_borders, set in extraConfig).
       window = {
         border = 2;
         titlebar = true;
       };
 
-      # Monochrome rose-pine window colours (no default blue).
-      # order: border background text indicator childBorder
       colors = {
         focused = {
           border = overlay;
@@ -228,34 +193,26 @@ in
         };
       };
 
-      # Use waybar instead of the built-in swaybar.
       bars = [ ];
 
       input = {
         "type:touchpad" = {
           tap = "enabled";
-          natural_scroll = "enabled"; # natural scrolling on (like GNOME)
-          dwt = "enabled"; # disable-while-typing
-          pointer_accel = "-0.253219"; # matches GNOME touchpad speed
+          natural_scroll = "enabled";
+          dwt = "enabled";
+          pointer_accel = "-0.253219";
         };
         "type:pointer" = {
-          accel_profile = "flat"; # matches GNOME flat mouse profile
-          pointer_accel = "0.107296"; # matches GNOME mouse speed
+          accel_profile = "flat";
+          pointer_accel = "0.107296";
         };
       };
 
-      # start the notification daemon with the session
       startup = [
         { command = "${pkgs.mako}/bin/mako"; }
-
-        # waybar/swayidle/swayosd are systemd user services gated on
-        # ConditionEnvironment=WAYLAND_DISPLAY. When launched from a display
-        # manager, sway-session.target can fire before HM's env push lands in
-        # the systemd manager, so all three get skipped (one-shot, no retry) and
-        # the bar silently never appears. Import the env ourselves and (re)start
-        # them — self-contained, so it doesn't race the HM push.
+        { command = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"; }
         {
-          command = ''${pkgs.systemd}/bin/systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP && ${pkgs.systemd}/bin/systemctl --user restart waybar.service swayidle.service swayosd.service'';
+          command = "${pkgs.systemd}/bin/systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP && ${pkgs.systemd}/bin/systemctl --user restart waybar.service swayidle.service swayosd.service";
         }
       ];
 
@@ -266,33 +223,26 @@ in
         scale = "1.5";
       };
 
-      # Ported super-key shortcuts. mkOptionDefault keeps all of sway's stock
-      # bindings and just layers these on top.
       keybindings = lib.mkOptionDefault (
         moveFollow
         // {
-          # window / session
-          "${mod}+w" = "kill"; # GNOME: close window
-          "${mod}+f" = "fullscreen toggle"; # GNOME: toggle fullscreen
-          "${mod}+l" = "exec ${lock}"; # lock screen
+          "${mod}+w" = "kill";
+          "${mod}+f" = "fullscreen toggle";
+          "${mod}+l" = "exec ${lock}";
 
-          # app launchers (GNOME custom keybindings)
           "${mod}+Return" = "exec ${terminal}";
           "${mod}+z" = "exec zeditor";
           "${mod}+c" = "exec zeditor /home/anurag/Documents/nixos-config";
           "${mod}+s" = "exec flatpak run com.spotify.Client";
-          "${mod}+b" = "exec flatpak run app.zen_browser.zen"; # GNOME: www
-          "${mod}+e" = "exec nautilus"; # GNOME: home
+          "${mod}+b" = "exec flatpak run app.zen_browser.zen";
+          "${mod}+e" = "exec nautilus";
 
-          # vicinae
           "${mod}+space" = "exec vicinae toggle";
           "${mod}+v" = "exec vicinae vicinae://launch/clipboard/history";
 
-          # screenshots (to clipboard, with notification)
           "Print" = "exec ${shotFull}";
           "${mod}+Shift+s" = "exec ${shotRegion}";
 
-          # media / laptop keys
           "XF86AudioRaiseVolume" = "exec ${swayosd-client} --output-volume raise";
           "XF86AudioLowerVolume" = "exec ${swayosd-client} --output-volume lower";
           "XF86AudioMute" = "exec ${swayosd-client} --output-volume mute-toggle";
@@ -307,16 +257,15 @@ in
     };
 
     extraConfig = ''
-      # side borders only when a workspace has >1 window
       smart_borders on
 
-      # three-finger touchpad swipe to switch workspaces
       bindgesture swipe:3:right workspace prev
       bindgesture swipe:3:left workspace next
+
+      workspace number 1
     '';
   };
 
-  # Auto-lock + lock-before-suspend. Manual lock is Super+L.
   services.swayidle = {
     enable = true;
     events = [
@@ -324,21 +273,24 @@ in
         event = "before-sleep";
         command = lock;
       }
+      {
+        event = "after-resume";
+        command = "swaymsg 'output * power on'";
+      }
     ];
     timeouts = [
       {
-        timeout = 300; # lock after 5 min idle
+        timeout = 300;
         command = lock;
       }
       {
-        timeout = 600; # screen off after 10 min idle
+        timeout = 600;
         command = "swaymsg 'output * power off'";
         resumeCommand = "swaymsg 'output * power on'";
       }
     ];
   };
 
-  # Waybar: monochrome rose-pine, JetBrains Mono Nerd Font, common system info.
   programs.waybar = {
     enable = true;
     systemd.enable = true;
@@ -364,8 +316,6 @@ in
         "battery"
       ];
 
-      # Workspaces — omarchy dot style: the active workspace shows a filled
-      # dot, the others show their number; 1-5 are always present.
       "sway/workspaces" = {
         format = "{icon}";
         format-icons = {
@@ -379,7 +329,7 @@ in
           "8" = "8";
           "9" = "9";
           "10" = "0";
-          focused = icon "f14fb"; # filled dot on the active workspace
+          focused = icon "f14fb";
           urgent = icon "f14fb";
         };
         persistent-workspaces = {
@@ -391,27 +341,21 @@ in
         };
       };
 
-      # day + time; click toggles to the long date (omarchy behaviour).
-      # text is sized down via pango <span> so it stays smaller than the glyphs
-      # (glyph + text share the module font-size, so CSS can't split them).
       clock = {
         format = "<span size='small'>{:%a %H:%M}</span>";
         format-alt = "<span size='small'>{:%d %B  W%V %Y}</span>";
         tooltip = false;
       };
 
-      # caffeine: click to inhibit idle (no lock/blank while activated)
       idle_inhibitor = {
         format = "{icon}";
         format-icons = {
-          activated = icon "f06e"; # eye (staying awake)
-          deactivated = icon "f070"; # eye-slash
+          activated = icon "f06e";
+          deactivated = icon "f070";
         };
         tooltip = false;
       };
 
-      # night light: click toggles a constant-warm wlsunset (see nightToggle).
-      # return-type json so the warm state gets the .active CSS colour.
       "custom/nightlight" = {
         format = "{}";
         return-type = "json";
@@ -422,40 +366,37 @@ in
       };
 
       cpu = {
-        format = "${icon "f035b"} <span size='small'>{usage}%</span>"; # chip
+        format = "${icon "f035b"} <span size='small'>{usage}%</span>";
         interval = 5;
       };
       memory = {
-        format = "${icon "f1c0"} <span size='small'>{percentage}%</span>"; # memory bank
+        format = "${icon "f1c0"} <span size='small'>{percentage}%</span>";
         interval = 5;
       };
-      # bluetooth (omarchy md glyphs); click -> vicinae bluetooth picker
       bluetooth = {
-        format = icon "f00af"; # bluetooth (on, nothing connected)
-        format-off = icon "f00b2"; # bluetooth-off
+        format = icon "f00af";
+        format-off = icon "f00b2";
         format-disabled = icon "f00b2";
-        format-connected = "${icon "f00b1"} {num_connections}"; # bluetooth-connect
+        format-connected = "${icon "f00b1"} {num_connections}";
         on-click = "${btMenu}";
         tooltip-format = "{controller_alias}";
       };
-      # network (omarchy md signal arcs); click -> vicinae wifi picker
       network = {
         format-wifi = "{icon} <span size='small'>{signalStrength}%</span>";
-        format-ethernet = icon "f0002"; # check-network (wired)
-        format-disconnected = icon "f092e"; # wifi-off
+        format-ethernet = icon "f0002";
+        format-disconnected = icon "f092e";
         format-icons = map icon [
-          "f092f" # wifi-strength-off-outline (weakest)
-          "f091f" # wifi-strength-1
-          "f0922" # wifi-strength-2
-          "f0925" # wifi-strength-3
-          "f0928" # wifi-strength-4 (strongest)
+          "f092f"
+          "f091f"
+          "f0922"
+          "f0925"
+          "f0928"
         ];
         tooltip-format = "{essid} ({ipaddr})";
         tooltip-format-disconnected = "Disconnected";
         on-click = "${wifiMenu}";
         interval = 5;
       };
-      # battery (omarchy md ramps); separate charging glyphs
       battery = {
         format = "{icon} <span size='small'>{capacity}%</span>";
         format-charging = "{icon} <span size='small'>{capacity}%</span>";
@@ -490,7 +431,7 @@ in
           warning = 20;
           critical = 10;
         };
-        interval = 5;
+        interval = 2.5;
       };
       pulseaudio = {
         format = "{icon} <span size='small'>{volume}%</span>";
@@ -507,10 +448,8 @@ in
 
     style = ''
       * {
-        /* the *Mono* nerd variant forces every icon to one cell width, so the
-           icon-to-text gap is identical across all modules */
         font-family: "JetBrainsMono Nerd Font Mono", "JetBrains Mono", monospace;
-        font-size: 15px;
+        font-size: 16px;
         font-weight: 500;
         border: none;
         border-radius: 0;
@@ -527,12 +466,10 @@ in
         margin-right: 6px;
       }
 
-      /* workspaces: flat text-only buttons (omarchy). all:initial strips GTK's
-         default button chrome, so re-apply font + colour here. */
       #workspaces button {
         all: initial;
         font-family: "JetBrainsMono Nerd Font Mono", "JetBrains Mono", monospace;
-        font-size: 15px;
+        font-size: 16px;
         color: ${muted};
         padding: 0 7px;
         margin: 0 1px;
@@ -556,7 +493,6 @@ in
         color: ${text};
       }
 
-      /* state colours */
       #idle_inhibitor.deactivated   { color: ${muted}; }
       #idle_inhibitor.activated     { color: ${gold}; }
       #custom-nightlight.active     { color: ${gold}; }
@@ -570,8 +506,6 @@ in
     '';
   };
 
-  # Notifications: mako, compact (omarchy-ish) rose-pine. Short height, thin
-  # border, square corners.
   services.mako = {
     enable = true;
     settings = {
@@ -580,7 +514,7 @@ in
       text-color = text;
       border-color = overlay;
       border-size = 1;
-      border-radius = 0; # square corners (matches the OSD sketch)
+      border-radius = 0;
       padding = "6,12";
       margin = "6";
       width = 280;
@@ -590,8 +524,6 @@ in
     };
   };
 
-  # Volume / brightness OSD: swayosd (server runs as a user service; keybindings
-  # call swayosd-client). config.toml is auto-discovered by the server.
   services.swayosd = {
     enable = true;
     stylePath = "${swayosdStyle}";
@@ -602,27 +534,22 @@ in
     max_volume = 100
   '';
 
-  # Lock screen: rose-pine hyprlock, omarchy-style — a single centred square
-  # input field, thick outline, no animations, attempt-count fail text. Flat
-  # base colour (no wallpaper/blur, unlike omarchy), no clock/date.
-  # Needs security.pam.services.hyprlock, set system-side in modules/sway.nix.
   programs.hyprlock = {
     enable = true;
     settings = {
       general = {
         hide_cursor = true;
-        ignore_empty_input = true; # Enter on an empty field does nothing
+        ignore_empty_input = true;
       };
 
       animations.enabled = false;
 
       auth."fingerprint:enabled" = false;
 
-      # Solid Rosé Pine base — no wallpaper.
       background = [
         {
           monitor = "";
-          color = "rgba(25, 23, 36, 1.0)"; # base #191724
+          color = "rgba(25, 23, 36, 1.0)";
         }
       ];
 
@@ -634,20 +561,20 @@ in
           halign = "center";
           valign = "center";
 
-          inner_color = "rgba(31, 29, 46, 1.0)"; # surface
-          outer_color = "rgba(64, 61, 82, 1.0)"; # highlight med
+          inner_color = "rgba(31, 29, 46, 1.0)";
+          outer_color = "rgba(64, 61, 82, 1.0)";
           outline_thickness = 4;
           rounding = 0;
 
           font_family = "JetBrainsMono Nerd Font";
-          font_color = "rgba(224, 222, 244, 1.0)"; # text
+          font_color = "rgba(224, 222, 244, 1.0)";
           placeholder_text = "Enter Password";
 
           dots_center = true;
-          check_color = "rgba(156, 207, 216, 1.0)"; # foam (verifying)
-          fail_color = "rgba(235, 111, 146, 1.0)"; # love (wrong)
+          check_color = "rgba(156, 207, 216, 1.0)";
+          fail_color = "rgba(235, 111, 146, 1.0)";
           fail_text = "<i>$FAIL ($ATTEMPTS)</i>";
-          capslock_color = "rgba(246, 193, 119, 1.0)"; # gold
+          capslock_color = "rgba(246, 193, 119, 1.0)";
 
           shadow_passes = 0;
           fade_on_empty = false;
@@ -656,8 +583,6 @@ in
     };
   };
 
-  # Fix GTK font rendering under sway (no gnome-settings-daemon here to apply
-  # hinting/antialiasing). Also sets the dark preference + cursor for GTK apps.
   gtk = {
     enable = true;
     font = {

@@ -9,7 +9,6 @@
   imports = [
     ./hardware-configuration.nix
     ./modules/hardware.nix
-    ./modules/gnome.nix
     ./modules/sway.nix
     ./modules/greeter.nix
   ];
