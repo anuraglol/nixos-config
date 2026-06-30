@@ -16,6 +16,7 @@
     ./modules/zed-editor.nix
     ./modules/kitty.nix
     ./modules/git.nix
+    ./modules/sway-home.nix
     vicinae.homeManagerModules.default
   ];
 

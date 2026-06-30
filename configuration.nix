@@ -10,12 +10,8 @@
     ./hardware-configuration.nix
     ./modules/hardware.nix
     ./modules/gnome.nix
-    # ./modules/dms.nix
+    ./modules/sway.nix
   ];
-
-  # nix.extraOptions = ''
-  #   !include /etc/nix/github-token.conf
-  # '';
 
   boot.loader = {
     systemd-boot.enable = true;
@@ -180,11 +176,15 @@
 
   fonts.packages = with pkgs; [
     jetbrains-mono
+    nerd-fonts.jetbrains-mono # patched glyphs for waybar icons
     fira-code
   ];
 
-
-  services.cloudflare-warp.enable = true;
+  fonts.fontconfig = {
+    antialias = true;
+    hinting.style = "full";
+    subpixel.rgba = "rgb";
+  };
 
   nix.settings = {
     experimental-features = [
@@ -212,6 +212,11 @@
       {
         users = [ "anurag" ];
         commands = [
+          {
+            # `sys-rebuild` fish alias -> sudo nixos-rebuild switch ...
+            command = "${pkgs.nixos-rebuild}/bin/nixos-rebuild";
+            options = [ "NOPASSWD" ];
+          }
           {
             command = "${pkgs.systemd}/bin/reboot";
             options = [ "NOPASSWD" ];
