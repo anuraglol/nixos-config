@@ -39,12 +39,25 @@ let
       nibble = n: builtins.elemAt hexChars (imod n 16);
       toHex4 = n: "${nibble (n / 4096)}${nibble (n / 256)}${nibble (n / 16)}${nibble n}";
       hexVal = {
-        "0" = 0; "1" = 1; "2" = 2; "3" = 3; "4" = 4; "5" = 5; "6" = 6; "7" = 7;
-        "8" = 8; "9" = 9; "a" = 10; "b" = 11; "c" = 12; "d" = 13; "e" = 14; "f" = 15;
+        "0" = 0;
+        "1" = 1;
+        "2" = 2;
+        "3" = 3;
+        "4" = 4;
+        "5" = 5;
+        "6" = 6;
+        "7" = 7;
+        "8" = 8;
+        "9" = 9;
+        "a" = 10;
+        "b" = 11;
+        "c" = 12;
+        "d" = 13;
+        "e" = 14;
+        "f" = 15;
       };
-      hexToInt = s: lib.foldl' (acc: c: acc * 16 + hexVal.${c}) 0 (
-        lib.stringToCharacters (lib.toLower s)
-      );
+      hexToInt =
+        s: lib.foldl' (acc: c: acc * 16 + hexVal.${c}) 0 (lib.stringToCharacters (lib.toLower s));
     in
     cp:
     let
@@ -232,7 +245,19 @@ in
       };
 
       # start the notification daemon with the session
-      startup = [ { command = "${pkgs.mako}/bin/mako"; } ];
+      startup = [
+        { command = "${pkgs.mako}/bin/mako"; }
+
+        # waybar/swayidle/swayosd are systemd user services gated on
+        # ConditionEnvironment=WAYLAND_DISPLAY. When launched from a display
+        # manager, sway-session.target can fire before HM's env push lands in
+        # the systemd manager, so all three get skipped (one-shot, no retry) and
+        # the bar silently never appears. Import the env ourselves and (re)start
+        # them — self-contained, so it doesn't race the HM push.
+        {
+          command = ''${pkgs.systemd}/bin/systemctl --user import-environment WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP && ${pkgs.systemd}/bin/systemctl --user restart waybar.service swayidle.service swayosd.service'';
+        }
+      ];
 
       seat."*".xcursor_theme = "Bibata-Modern-Ice 20";
 
@@ -256,7 +281,7 @@ in
           "${mod}+z" = "exec zeditor";
           "${mod}+c" = "exec zeditor /home/anurag/Documents/nixos-config";
           "${mod}+s" = "exec flatpak run com.spotify.Client";
-          "${mod}+b" = "flatpak run app.zen_browser.zen"; # GNOME: www
+          "${mod}+b" = "exec flatpak run app.zen_browser.zen"; # GNOME: www
           "${mod}+e" = "exec nautilus"; # GNOME: home
 
           # vicinae

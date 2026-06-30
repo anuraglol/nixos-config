@@ -1,9 +1,11 @@
 { pkgs, ... }:
 
 {
-  services.xserver.enable = true;
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
+  # GNOME temporarily disabled — running Sway only for now. Flip these back to
+  # true (and rebuild) to get the GNOME fallback session in ly again. Everything
+  # below (excludePackages, xkb) is harmless while disabled.
+  services.xserver.enable = false;
+  services.desktopManager.gnome.enable = false;
 
   services.xserver.excludePackages = [ pkgs.xterm ];
   services.gnome.games.enable = false;
