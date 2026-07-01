@@ -27,6 +27,9 @@
   programs.home-manager.enable = true;
   programs.kitty.enable = true;
   home.sessionVariables.NIXOS_OZONE_WL = "1";
+  # Force GTK apps (incl. Zen/Firefox in its default "auto" mode) to use the
+  # xdg-desktop-portal file picker -> the GNOME (pretty GTK4/Nautilus) chooser.
+  home.sessionVariables.GTK_USE_PORTAL = "1";
 
   # SSH agent. Under GNOME, gnome-keyring was the SSH agent and auto-unlocked
   # the (passphrase-protected) key, so git-over-ssh "just worked". Sway has no

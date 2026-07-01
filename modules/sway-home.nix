@@ -4,6 +4,8 @@ let
   mod = "Mod4";
   terminal = "kitty";
   lock = "${pkgs.hyprlock}/bin/hyprlock";
+  # Fork to background so swayidle -w doesn't block forever on the lock screen.
+  lockBg = "pidof hyprlock || ${lock} &";
 
   base = "#191724";
   surface = "#1f1d2e";
@@ -71,6 +73,7 @@ let
 
   wifiMenu = "vicinae vicinae://launch/@dagimg-dot/store.vicinae.wifi-commander/scan-wifi";
   btMenu = "vicinae vicinae://launch/@Gelei/store.vicinae.bluetooth/devices";
+  powerMenu = "vicinae vicinae://launch/@botkooper/store.vicinae.power-profile/power-profile";
 
   swayosd-client = "${pkgs.swayosd}/bin/swayosd-client";
 
@@ -158,7 +161,7 @@ in
       };
 
       window = {
-        border = 2;
+        border = 1;
         titlebar = true;
       };
 
@@ -240,8 +243,8 @@ in
           "${mod}+space" = "exec vicinae toggle";
           "${mod}+v" = "exec vicinae vicinae://launch/clipboard/history";
 
-          "Print" = "exec ${shotFull}";
-          "${mod}+Shift+s" = "exec ${shotRegion}";
+          "Print" = "exec ${shotRegion}";
+          "${mod}+Shift+s" = "exec ${shotFull}";
 
           "XF86AudioRaiseVolume" = "exec ${swayosd-client} --output-volume raise";
           "XF86AudioLowerVolume" = "exec ${swayosd-client} --output-volume lower";
@@ -271,7 +274,7 @@ in
     events = [
       {
         event = "before-sleep";
-        command = lock;
+        command = lockBg;
       }
       {
         event = "after-resume";
@@ -279,14 +282,28 @@ in
       }
     ];
     timeouts = [
+      # 5 min idle: lock, then blank the display.
+      # 10 min idle: suspend to s2idle (the only sleep state this machine has).
+      #
+      # Waking works because the internal keyboard (i8042/serio0) AND the power
+      # button (PNP0C0C) are both enabled s2idle wake sources at the device
+      # level -- they generate the "in-band interrupts" that resume S0ix. The
+      # USB/xhci and PCIe-bridge wakes that hardware.nix disables are unrelated
+      # to these two. On resume, the `after-resume` event below re-powers the
+      # display (bare Sway won't do it on its own, unlike GNOME). If a keypress
+      # ever fails to wake it, the power button always will.
       {
-        timeout = 300;
-        command = lock;
+        timeout = 60;
+        command = lockBg;
       }
       {
-        timeout = 600;
+        timeout = 60;
         command = "swaymsg 'output * power off'";
         resumeCommand = "swaymsg 'output * power on'";
+      }
+      {
+        timeout = 100;
+        command = "systemctl suspend";
       }
     ];
   };
@@ -372,6 +389,7 @@ in
       memory = {
         format = "${icon "f1c0"} <span size='small'>{percentage}%</span>";
         interval = 5;
+        tooltip-format = "RAM: {used:0.1f} GiB / {total:0.1f} GiB\nSwap: {swapUsed:0.1f} GiB / {swapTotal:0.1f} GiB";
       };
       bluetooth = {
         format = icon "f00af";
@@ -431,6 +449,7 @@ in
           warning = 20;
           critical = 10;
         };
+        on-click = "${powerMenu}";
         interval = 2.5;
       };
       pulseaudio = {
@@ -556,7 +575,7 @@ in
       input-field = [
         {
           monitor = "";
-          size = "400, 55";
+          size = "460, 65";
           position = "0, 0";
           halign = "center";
           valign = "center";
@@ -578,6 +597,30 @@ in
 
           shadow_passes = 0;
           fade_on_empty = false;
+        }
+      ];
+
+      # Quiet info row below the input: time on the left, battery on the right
+      label = [
+        {
+          monitor = "";
+          text = "cmd[update:1000] date +%H:%M";
+          font_family = "JetBrainsMono Nerd Font";
+          font_size = 13;
+          color = "rgba(110, 106, 134, 1.0)";
+          position = "-40, -75";
+          halign = "center";
+          valign = "center";
+        }
+        {
+          monitor = "";
+          text = ''cmd[update:30000] echo "󰁹 $(cat /sys/class/power_supply/BAT0/capacity)%"'';
+          font_family = "JetBrainsMono Nerd Font";
+          font_size = 13;
+          color = "rgba(110, 106, 134, 1.0)";
+          position = "40, -75";
+          halign = "center";
+          valign = "center";
         }
       ];
     };

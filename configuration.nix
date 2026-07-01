@@ -55,6 +55,11 @@
     pulse.enable = true;
   };
 
+  # CPU/platform power profile switching (balanced / performance / power-saver).
+  # Exposes the org.freedesktop.UPower.PowerProfiles D-Bus API that the Vicinae
+  # power-profile extension drives when clicking the waybar battery icon.
+  services.power-profiles-daemon.enable = true;
+
   services.flatpak.enable = true;
   networking = {
     nameservers = [
@@ -65,6 +70,9 @@
       enable = true;
       dns = "none";
     };
+    extraHosts = ''
+      127.0.0.1 local.app.beanstalk.fi
+    '';
   };
 
   services.resolved.enable = false;
@@ -141,7 +149,13 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
+      pkgs.xdg-desktop-portal-gnome
+    ];
+    # Route the file picker to the GNOME backend (the pretty GTK4/Nautilus one);
+    # let gtk handle everything else. wlr (from sway.nix) keeps screencast/screenshot.
+    config.common."org.freedesktop.impl.portal.FileChooser" = [ "gnome" ];
     xdgOpenUsePortal = true;
   };
   qt = {
