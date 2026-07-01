@@ -282,27 +282,17 @@ in
       }
     ];
     timeouts = [
-      # 5 min idle: lock, then blank the display.
-      # 10 min idle: suspend to s2idle (the only sleep state this machine has).
-      #
-      # Waking works because the internal keyboard (i8042/serio0) AND the power
-      # button (PNP0C0C) are both enabled s2idle wake sources at the device
-      # level -- they generate the "in-band interrupts" that resume S0ix. The
-      # USB/xhci and PCIe-bridge wakes that hardware.nix disables are unrelated
-      # to these two. On resume, the `after-resume` event below re-powers the
-      # display (bare Sway won't do it on its own, unlike GNOME). If a keypress
-      # ever fails to wake it, the power button always will.
       {
-        timeout = 60;
+        timeout = 300;
         command = lockBg;
       }
       {
-        timeout = 60;
+        timeout = 300;
         command = "swaymsg 'output * power off'";
         resumeCommand = "swaymsg 'output * power on'";
       }
       {
-        timeout = 100;
+        timeout = 600;
         command = "systemctl suspend";
       }
     ];
