@@ -14,7 +14,7 @@
     ];
   };
 
-  security.pam.services.hyprlock = { };
+  security.pam.services.swaylock = { };
 
   # Suspend is deliberate: closing the lid is the only thing that enters s2idle
   # (there is no S3 deep sleep on this machine). swayidle intentionally does NOT

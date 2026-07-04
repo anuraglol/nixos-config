@@ -3,9 +3,9 @@
 let
   mod = "Mod4";
   terminal = "kitty";
-  lock = "${pkgs.hyprlock}/bin/hyprlock";
+  lock = "${pkgs.swaylock}/bin/swaylock --color 191724ff";
   # Fork to background so swayidle -w doesn't block forever on the lock screen.
-  lockBg = "pidof hyprlock || ${lock} &";
+  lockBg = "pidof swaylock || ${lock} &";
 
   base = "#191724";
   surface = "#1f1d2e";
@@ -542,79 +542,6 @@ in
     show_percentage = true
     max_volume = 100
   '';
-
-  programs.hyprlock = {
-    enable = true;
-    settings = {
-      general = {
-        hide_cursor = true;
-        ignore_empty_input = true;
-      };
-
-      animations.enabled = false;
-
-      auth."fingerprint:enabled" = false;
-
-      background = [
-        {
-          monitor = "";
-          color = "rgba(25, 23, 36, 1.0)";
-        }
-      ];
-
-      input-field = [
-        {
-          monitor = "";
-          size = "460, 65";
-          position = "0, 0";
-          halign = "center";
-          valign = "center";
-
-          inner_color = "rgba(31, 29, 46, 1.0)";
-          outer_color = "rgba(64, 61, 82, 1.0)";
-          outline_thickness = 4;
-          rounding = 0;
-
-          font_family = "JetBrainsMono Nerd Font";
-          font_color = "rgba(224, 222, 244, 1.0)";
-          placeholder_text = "Enter Password";
-
-          dots_center = true;
-          check_color = "rgba(156, 207, 216, 1.0)";
-          fail_color = "rgba(235, 111, 146, 1.0)";
-          fail_text = "<i>$FAIL ($ATTEMPTS)</i>";
-          capslock_color = "rgba(246, 193, 119, 1.0)";
-
-          shadow_passes = 0;
-          fade_on_empty = false;
-        }
-      ];
-
-      # Quiet info row below the input: time on the left, battery on the right
-      label = [
-        {
-          monitor = "";
-          text = "cmd[update:1000] date +%H:%M";
-          font_family = "JetBrainsMono Nerd Font";
-          font_size = 13;
-          color = "rgba(110, 106, 134, 1.0)";
-          position = "-40, -75";
-          halign = "center";
-          valign = "center";
-        }
-        {
-          monitor = "";
-          text = ''cmd[update:30000] echo "󰁹 $(cat /sys/class/power_supply/BAT0/capacity)%"'';
-          font_family = "JetBrainsMono Nerd Font";
-          font_size = 13;
-          color = "rgba(110, 106, 134, 1.0)";
-          position = "40, -75";
-          halign = "center";
-          valign = "center";
-        }
-      ];
-    };
-  };
 
   gtk = {
     enable = true;
