@@ -9,13 +9,9 @@
   imports = [
     ./hardware-configuration.nix
     ./modules/hardware.nix
-    ./modules/gnome.nix
-    # ./modules/dms.nix
+    ./modules/sway.nix
+    ./modules/greeter.nix
   ];
-
-  # nix.extraOptions = ''
-  #   !include /etc/nix/github-token.conf
-  # '';
 
   boot.loader = {
     systemd-boot.enable = true;
@@ -59,6 +55,11 @@
     pulse.enable = true;
   };
 
+  # CPU/platform power profile switching (balanced / performance / power-saver).
+  # Exposes the org.freedesktop.UPower.PowerProfiles D-Bus API that the Vicinae
+  # power-profile extension drives when clicking the waybar battery icon.
+  services.power-profiles-daemon.enable = true;
+
   services.flatpak.enable = true;
   networking = {
     nameservers = [
@@ -69,6 +70,9 @@
       enable = true;
       dns = "none";
     };
+    extraHosts = ''
+      127.0.0.1 local.app.beanstalk.fi
+    '';
   };
 
   services.resolved.enable = false;
@@ -94,6 +98,14 @@
           tls_auth_name = "dns.google";
         }
       ];
+    };
+  };
+
+  services.openssh = {
+    enable = true;
+    settings = {
+      PermitRootLogin = "no";
+      PasswordAuthentication = true;
     };
   };
 
@@ -137,7 +149,13 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
+      pkgs.xdg-desktop-portal-gnome
+    ];
+    # Route the file picker to the GNOME backend (the pretty GTK4/Nautilus one);
+    # let gtk handle everything else. wlr (from sway.nix) keeps screencast/screenshot.
+    config.common."org.freedesktop.impl.portal.FileChooser" = [ "gnome" ];
     xdgOpenUsePortal = true;
   };
   qt = {
@@ -172,26 +190,15 @@
 
   fonts.packages = with pkgs; [
     jetbrains-mono
+    nerd-fonts.jetbrains-mono # patched glyphs for waybar icons
     fira-code
   ];
 
-  systemd.services.bluetooth-suspend-fix = {
-    description = "Stop Bluetooth before suspend to prevent driver deadlock";
-    before = [ "sleep.target" ];
-    after = [ "suspend.target" ];
-    wantedBy = [
-      "sleep.target"
-      "suspend.target"
-    ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = "${pkgs.util-linux}/bin/rfkill block bluetooth";
-      ExecStop = "${pkgs.util-linux}/bin/rfkill unblock bluetooth";
-    };
+  fonts.fontconfig = {
+    antialias = true;
+    hinting.style = "full";
+    subpixel.rgba = "rgb";
   };
-
-  services.cloudflare-warp.enable = true;
 
   nix.settings = {
     experimental-features = [
@@ -219,6 +226,11 @@
       {
         users = [ "anurag" ];
         commands = [
+          {
+            # `sys-rebuild` fish alias -> sudo nixos-rebuild switch ...
+            command = "${pkgs.nixos-rebuild}/bin/nixos-rebuild";
+            options = [ "NOPASSWD" ];
+          }
           {
             command = "${pkgs.systemd}/bin/reboot";
             options = [ "NOPASSWD" ];
