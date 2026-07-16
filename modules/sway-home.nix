@@ -229,8 +229,11 @@ in
       keybindings = lib.mkOptionDefault (
         moveFollow
         // {
+          "${mod}+shift+z" = "systemctl suspend";
+
           "${mod}+w" = "kill";
           "${mod}+f" = "fullscreen toggle";
+          "${mod}+Shift+space" = "floating toggle";
           "${mod}+l" = "exec ${lock}";
 
           "${mod}+Return" = "exec ${terminal}";
@@ -261,11 +264,21 @@ in
 
     extraConfig = ''
       smart_borders on
+      floating_modifier ${mod} normal
 
       bindgesture swipe:3:right workspace prev
       bindgesture swipe:3:left workspace next
 
       workspace number 1
+
+      for_window [app_id="org.gnome.Loupe"] floating enable
+      for_window [app_id="org.gnome.Nautilus" title=".*Properties"] floating enable
+      for_window [app_id="org.gnome.Nautilus" title=".*(Progress|Conflict|Error|Warning).*"] floating enable
+      for_window [app_id="pavucontrol"] floating enable
+      for_window [window_role="pop-up"] floating enable
+      for_window [window_role="bubble"] floating enable
+      for_window [window_role="dialog"] floating enable
+      for_window [window_type="dialog"] floating enable
     '';
   };
 

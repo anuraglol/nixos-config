@@ -1,4 +1,9 @@
-{ pkgs, unstable-pkgs, ... }:
+{
+  pkgs,
+  unstable-pkgs,
+  herdr,
+  ...
+}:
 
 let
   # qBittorrent (Qt6 Widgets) ignores Sway's fractional scale and renders at 1x,
@@ -14,6 +19,113 @@ let
       wrapProgram $out/bin/qbittorrent --set QT_SCALE_FACTOR 1.5
     '';
   };
+
+  httpie-appimage =
+    let
+      pname = "httpie";
+      version = "2025.2.0";
+      src = pkgs.fetchurl {
+        url = "https://github.com/httpie/desktop/releases/download/v${version}/HTTPie-${version}.AppImage";
+        hash = "sha256-qFDiFXQbYAhweQhgYfZW/lUMtmw09tqT9t/GPJRtZU8=";
+        name = "HTTPie-${version}.AppImage";
+      };
+      appimageContents = pkgs.appimageTools.extract {
+        inherit pname version src;
+      };
+    in
+    pkgs.runCommand "${pname}-${version}"
+      {
+        nativeBuildInputs = [ pkgs.makeWrapper ];
+        meta.mainProgram = pname;
+      }
+      ''
+              mkdir -p $out/bin $out/share/applications $out/share/icons
+
+              # Install the AppImage itself into the derivation
+              install -Dm755 ${src} $out/libexec/httpie/HTTPie.AppImage
+
+              # Create a wrapper script so `httpie` launches via appimage-run
+              makeWrapper ${pkgs.appimage-run}/bin/appimage-run $out/bin/httpie \
+                --add-flags "$out/libexec/httpie/HTTPie.AppImage"
+
+              # Re-use the desktop entry shipped inside the AppImage
+              if [ -f ${appimageContents}/httpie.desktop ]; then
+                cp ${appimageContents}/httpie.desktop $out/share/applications/httpie.desktop
+              else
+                cat > $out/share/applications/httpie.desktop <<EOF
+        [Desktop Entry]
+        Name=HTTPie
+        Exec=$out/bin/httpie %U
+        Terminal=false
+        Type=Application
+        Icon=httpie
+        Categories=Development;
+        EOF
+              fi
+
+              # Patch Exec so it points to our wrapper
+              sed -i "s|Exec=.*|Exec=$out/bin/httpie %U|" $out/share/applications/httpie.desktop
+              sed -i "s|TryExec=.*|TryExec=$out/bin/httpie|" $out/share/applications/httpie.desktop || true
+
+              # Install icons that ship inside the AppImage
+              if [ -d ${appimageContents}/usr/share/icons ]; then
+                cp -r ${appimageContents}/usr/share/icons/* $out/share/icons/
+              fi
+      '';
+
+  research-appimage =
+    let
+      pname = "research";
+      version = "1.3.2";
+      src = pkgs.fetchurl {
+        url = "https://un.ms/research/downloads/${version}/Research_${version}_amd64.AppImage";
+        hash = "sha256-W55Bq5jvGry0LbTEquE4k5EEqE613bfn5wAlChQkf44=";
+        name = "Research-${version}.AppImage";
+      };
+      appimageContents = pkgs.appimageTools.extract {
+        inherit pname version src;
+      };
+    in
+    pkgs.runCommand "${pname}-${version}"
+      {
+        nativeBuildInputs = [ pkgs.makeWrapper ];
+        meta.mainProgram = pname;
+      }
+      ''
+              mkdir -p $out/bin $out/share/applications $out/share/icons
+
+              # Install the AppImage itself into the derivation
+              install -Dm755 ${src} $out/libexec/research/Research.AppImage
+
+              # Create a wrapper script so `research` launches via appimage-run
+              makeWrapper ${pkgs.appimage-run}/bin/appimage-run $out/bin/research \
+                --add-flags "$out/libexec/research/Research.AppImage"
+
+              # Re-use the desktop entry shipped inside the AppImage
+              if [ -f ${appimageContents}/Research.desktop ]; then
+                cp ${appimageContents}/Research.desktop $out/share/applications/Research.desktop
+              else
+                cat > $out/share/applications/Research.desktop <<EOF
+        [Desktop Entry]
+        Name=Research
+        Exec=$out/bin/research %U
+        Terminal=false
+        Type=Application
+        Icon=research
+        Categories=Office;
+        MimeType=x-scheme-handler/research;
+        EOF
+              fi
+
+              # Patch Exec so it points to our wrapper
+              sed -i "s|Exec=.*|Exec=$out/bin/research %U|" $out/share/applications/Research.desktop
+              sed -i "s|TryExec=.*|TryExec=$out/bin/research|" $out/share/applications/Research.desktop || true
+
+              # Install icons that ship inside the AppImage
+              if [ -d ${appimageContents}/usr/share/icons ]; then
+                cp -r ${appimageContents}/usr/share/icons/* $out/share/icons/
+              fi
+      '';
 in
 {
   home.packages = with pkgs; [
@@ -38,14 +150,18 @@ in
     localsend
     eza
     ripgrep
+    ytmdesktop
 
     mpv
     vlc
     qbittorrent-scaled
     bibata-cursors
+    chromium
+    helium
 
     nautilus
     snapshot
+    loupe
     adwaita-icon-theme
     obs-studio
     ffmpeg
@@ -66,8 +182,13 @@ in
     ruby-lsp
     mkcert
     nss
+    awscli
+    fff
 
     unstable-pkgs.claude-code
     mcp-nixos
+    herdr.packages.${pkgs.system}.default
+    httpie-appimage
+    research-appimage
   ];
 }

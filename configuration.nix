@@ -55,10 +55,12 @@
     pulse.enable = true;
   };
 
-  # CPU/platform power profile switching (balanced / performance / power-saver).
-  # Exposes the org.freedesktop.UPower.PowerProfiles D-Bus API that the Vicinae
-  # power-profile extension drives when clicking the waybar battery icon.
   services.power-profiles-daemon.enable = true;
+  services.tailscale = {
+    enable = true;
+  };
+
+  services.usbmuxd.enable = true;
 
   services.flatpak.enable = true;
   networking = {
@@ -99,6 +101,12 @@
         }
       ];
     };
+  };
+
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 53317 ];
+    allowedUDPPorts = [ 53317 ];
   };
 
   services.openssh = {
@@ -146,6 +154,10 @@
   programs.nix-ld.libraries = with pkgs; [
     # Add any common missing libraries here if the app crashes later
   ];
+  programs.appimage = {
+    enable = true;
+    binfmt = true;
+  };
 
   xdg.portal = {
     enable = true;
@@ -185,7 +197,7 @@
     uv
     devenv
     wl-clipboard
-    steam-run
+    ifuse
   ];
 
   fonts.packages = with pkgs; [
