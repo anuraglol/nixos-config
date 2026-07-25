@@ -151,6 +151,8 @@ in
     eza
     ripgrep
     ytmdesktop
+    docker
+    btop
 
     mpv
     vlc

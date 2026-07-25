@@ -25,6 +25,12 @@ in
 
   services.udev.extraRules = ''
     SUBSYSTEM=="pci", DRIVER=="xhci_hcd", ATTR{power/wakeup}="disabled"
+
+    # The HS6209 2.4G wireless receiver is the only reliable s2idle wake source
+    # on this IdeaPad AMD platform (the internal keyboard / power button do not
+    # generate wake events). Keep it enabled and prevent USB autosuspend so it
+    # does not flake out between suspend cycles.
+    SUBSYSTEM=="usb", ATTR{idVendor}=="32c2", ATTR{idProduct}=="0018", ATTR{power/wakeup}="enabled", ATTR{power/control}="on"
   '';
 
   systemd.services.disable-gpp-wakeup = {

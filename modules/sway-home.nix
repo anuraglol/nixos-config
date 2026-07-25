@@ -5,7 +5,11 @@ let
   terminal = "kitty";
   lock = "${pkgs.swaylock}/bin/swaylock --color 191724ff";
   # Fork to background so swayidle -w doesn't block forever on the lock screen.
-  lockBg = "pidof swaylock || ${lock} &";
+  # Use absolute paths because the swayidle systemd service only has bash in PATH.
+  lockBg = "${pkgs.procps}/bin/pidof swaylock >/dev/null 2>&1 || ${lock} &";
+
+  swaymsg = "${pkgs.sway}/bin/swaymsg";
+  systemctl = "${pkgs.systemd}/bin/systemctl";
 
   base = "#191724";
   surface = "#1f1d2e";
@@ -222,7 +226,7 @@ in
       seat."*".xcursor_theme = "Bibata-Modern-Ice 20";
 
       output."*" = {
-        bg = "~/.config/background fill";
+        bg = "~/.config/background.png fill";
         scale = "1.5";
       };
 
@@ -284,29 +288,26 @@ in
 
   services.swayidle = {
     enable = true;
-    events = [
-      {
-        event = "before-sleep";
-        command = lockBg;
-      }
-      {
-        event = "after-resume";
-        command = "swaymsg 'output * power on'";
-      }
-    ];
+    events = {
+      before-sleep = lockBg;
+      after-resume = "${swaymsg} 'output * power on'";
+    };
     timeouts = [
+      # Lock after 5 minutes of idle.
       {
         timeout = 300;
         command = lockBg;
       }
+      # Turn the display off at the same time as the lock.
       {
         timeout = 300;
-        command = "swaymsg 'output * power off'";
-        resumeCommand = "swaymsg 'output * power on'";
+        command = "${swaymsg} 'output * power off'";
+        resumeCommand = "${swaymsg} 'output * power on'";
       }
+      # Suspend after 10 minutes of idle total.
       {
         timeout = 600;
-        command = "systemctl suspend";
+        command = "${systemctl} suspend";
       }
     ];
   };

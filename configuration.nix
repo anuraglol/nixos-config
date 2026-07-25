@@ -31,7 +31,10 @@
   networking.hostName = "neko";
 
   time.timeZone = "Asia/Kolkata";
-  i18n.defaultLocale = "en_IN";
+  # glibc-locales does not include en_IN.UTF-8 by default, so use a
+  # supported UTF-8 locale as the default and keep Indian formats via
+  # the individual LC_* variables.
+  i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_IN";
@@ -56,6 +59,7 @@
   };
 
   services.power-profiles-daemon.enable = true;
+  services.upower.enable = true;
   services.tailscale = {
     enable = true;
   };
@@ -78,6 +82,9 @@
   };
 
   services.resolved.enable = false;
+  virtualisation.docker = {
+    enable = true;
+  };
 
   services.stubby = {
     enable = true;
@@ -123,6 +130,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "docker"
     ];
     packages = with pkgs; [ ];
     shell = pkgs.fish;
