@@ -4,7 +4,12 @@
   programs.git = {
     enable = true;
 
-    extraConfig = {
+    settings = {
+      user = {
+        name = "Anurag";
+        email = "kr.anurag24@gmail.com";
+      };
+
       init.defaultBranch = "main";
 
       push.autoSetupRemote = true;
@@ -30,25 +35,26 @@
       column.ui = "auto";
 
       branch.sort = "-committerdate";
-    };
 
-    aliases = {
-      st = "status";
-      co = "checkout";
-      br = "branch";
-      cm = "commit -m";
-      ca = "commit --amend --no-edit";
-      lg = "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all";
-    };
-
-    delta = {
-      enable = true;
-      options = {
-        navigate = true;
-        light = false;
-        side-by-side = true;
-        line-numbers = true;
+      alias = {
+        st = "status";
+        co = "checkout";
+        br = "branch";
+        cm = "commit -m";
+        ca = "commit --amend --no-edit";
+        lg = "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all";
       };
+    };
+  };
+
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+    options = {
+      navigate = true;
+      light = false;
+      side-by-side = true;
+      line-numbers = true;
     };
   };
 }
