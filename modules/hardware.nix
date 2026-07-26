@@ -24,7 +24,23 @@ in
   ];
 
   services.udev.extraRules = ''
-    SUBSYSTEM=="pci", DRIVER=="xhci_hcd", ATTR{power/wakeup}="disabled"
+    # Disable xhci wakeup for USB4/Thunderbolt controllers only; these are the
+    # spurious-wake culprits on Rembrandt laptops. Keep both primary AMD USB
+    # controllers (04:00.3 / 04:00.4) enabled so any internally-USB-connected
+    # devices (keyboard, trackpad) can also wake the system.
+    SUBSYSTEM=="pci", KERNEL=="0000:05:00.0", DRIVER=="xhci_hcd", ATTR{power/wakeup}="disabled"
+    SUBSYSTEM=="pci", KERNEL=="0000:05:00.3", DRIVER=="xhci_hcd", ATTR{power/wakeup}="disabled"
+    SUBSYSTEM=="pci", KERNEL=="0000:05:00.4", DRIVER=="xhci_hcd", ATTR{power/wakeup}="disabled"
+
+    # Enable wakeup for the primary AMD USB controllers.
+    SUBSYSTEM=="pci", KERNEL=="0000:04:00.3", DRIVER=="xhci_hcd", ATTR{power/wakeup}="enabled"
+    SUBSYSTEM=="pci", KERNEL=="0000:04:00.4", DRIVER=="xhci_hcd", ATTR{power/wakeup}="enabled"
+
+    # Enable the root hubs so remote-wakeup signals reach the system.
+    SUBSYSTEM=="usb", KERNEL=="usb1", ATTR{power/wakeup}="enabled"
+    SUBSYSTEM=="usb", KERNEL=="usb2", ATTR{power/wakeup}="enabled"
+    SUBSYSTEM=="usb", KERNEL=="usb3", ATTR{power/wakeup}="enabled"
+    SUBSYSTEM=="usb", KERNEL=="usb4", ATTR{power/wakeup}="enabled"
 
     # The HS6209 2.4G wireless receiver is the only reliable s2idle wake source
     # on this IdeaPad AMD platform (the internal keyboard / power button do not
@@ -51,6 +67,32 @@ in
               if grep -q "^''${dev}.*enabled" /proc/acpi/wakeup; then
                 echo "$dev" > /proc/acpi/wakeup
                 echo "disabled $dev"
+              fi
+            done
+          '';
+        in
+        "${script}";
+    };
+  };
+
+  systemd.services.enable-xhci-wakeup = {
+    path = [
+      pkgs.gnugrep
+      pkgs.coreutils
+    ];
+    description = "Enable XHC0/XHC1 ACPI wakeup sources for USB keyboard/mouse";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "systemd-udevd.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart =
+        let
+          script = pkgs.writeShellScript "enable-xhci-wakeup" ''
+            for dev in XHC0 XHC1; do
+              if grep -q "^''${dev}.*disabled" /proc/acpi/wakeup; then
+                echo "$dev" > /proc/acpi/wakeup
+                echo "enabled $dev"
               fi
             done
           '';

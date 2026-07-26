@@ -133,6 +133,16 @@ in
   programs.home-manager.enable = true;
   programs.kitty.enable = true;
 
+  gtk = {
+    enable = true;
+    gtk3.extraConfig = {
+      gtk-decoration-layout = ":";
+    };
+    gtk4.extraConfig = {
+      gtk-decoration-layout = ":";
+    };
+  };
+
   programs.btop = {
     enable = true;
     settings = {
@@ -164,7 +174,9 @@ in
   services.ssh-agent.enable = true;
   programs.ssh = {
     enable = true;
-    addKeysToAgent = "yes";
+    settings."*" = {
+      AddKeysToAgent = "yes";
+    };
   };
 
   services.vicinae = {

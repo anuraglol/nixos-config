@@ -105,7 +105,7 @@
           type = "command";
           key = "󱦟 OS Age";
           keyColor = "magenta";
-          text = "echo $(( ($(date +%s) - $(stat -c %W /)) / 86400 )) days";
+          text = "echo $(( ($(date +%s) - $(stat -c %W /)) / 86400 + 66 )) days";
         }
         {
           type = "uptime";

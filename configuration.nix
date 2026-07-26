@@ -136,23 +136,6 @@
     shell = pkgs.fish;
   };
 
-  fileSystems."/home/anurag/Downloads" = {
-    device = "/data/Downloads";
-    fsType = "ext4";
-    options = [
-      "bind"
-      "nofail"
-    ];
-  };
-  fileSystems."/home/anurag/Documents" = {
-    device = "/data/Documents";
-    fsType = "ext4";
-    options = [
-      "bind"
-      "nofail"
-    ];
-  };
-
   programs.firefox.enable = true;
   programs.dconf.enable = true;
   programs.fish.enable = true;

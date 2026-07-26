@@ -226,7 +226,7 @@ in
       seat."*".xcursor_theme = "Bibata-Modern-Ice 20";
 
       output."*" = {
-        bg = "~/.config/background.png fill";
+        bg = "~/.config/background.jpg fill";
         scale = "1.5";
       };
 
@@ -562,6 +562,10 @@ in
     font = {
       name = "JetBrains Mono";
       size = 11;
+    };
+    iconTheme = {
+      name = "Adwaita";
+      package = pkgs.adwaita-icon-theme;
     };
     cursorTheme = {
       name = "Bibata-Modern-Ice";

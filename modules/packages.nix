@@ -73,59 +73,6 @@ let
               fi
       '';
 
-  research-appimage =
-    let
-      pname = "research";
-      version = "1.3.2";
-      src = pkgs.fetchurl {
-        url = "https://un.ms/research/downloads/${version}/Research_${version}_amd64.AppImage";
-        hash = "sha256-W55Bq5jvGry0LbTEquE4k5EEqE613bfn5wAlChQkf44=";
-        name = "Research-${version}.AppImage";
-      };
-      appimageContents = pkgs.appimageTools.extract {
-        inherit pname version src;
-      };
-    in
-    pkgs.runCommand "${pname}-${version}"
-      {
-        nativeBuildInputs = [ pkgs.makeWrapper ];
-        meta.mainProgram = pname;
-      }
-      ''
-              mkdir -p $out/bin $out/share/applications $out/share/icons
-
-              # Install the AppImage itself into the derivation
-              install -Dm755 ${src} $out/libexec/research/Research.AppImage
-
-              # Create a wrapper script so `research` launches via appimage-run
-              makeWrapper ${pkgs.appimage-run}/bin/appimage-run $out/bin/research \
-                --add-flags "$out/libexec/research/Research.AppImage"
-
-              # Re-use the desktop entry shipped inside the AppImage
-              if [ -f ${appimageContents}/Research.desktop ]; then
-                cp ${appimageContents}/Research.desktop $out/share/applications/Research.desktop
-              else
-                cat > $out/share/applications/Research.desktop <<EOF
-        [Desktop Entry]
-        Name=Research
-        Exec=$out/bin/research %U
-        Terminal=false
-        Type=Application
-        Icon=research
-        Categories=Office;
-        MimeType=x-scheme-handler/research;
-        EOF
-              fi
-
-              # Patch Exec so it points to our wrapper
-              sed -i "s|Exec=.*|Exec=$out/bin/research %U|" $out/share/applications/Research.desktop
-              sed -i "s|TryExec=.*|TryExec=$out/bin/research|" $out/share/applications/Research.desktop || true
-
-              # Install icons that ship inside the AppImage
-              if [ -d ${appimageContents}/usr/share/icons ]; then
-                cp -r ${appimageContents}/usr/share/icons/* $out/share/icons/
-              fi
-      '';
 in
 {
   home.packages = with pkgs; [
@@ -191,6 +138,5 @@ in
     mcp-nixos
     herdr.packages.${pkgs.system}.default
     httpie-appimage
-    research-appimage
   ];
 }
