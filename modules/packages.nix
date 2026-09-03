@@ -107,6 +107,7 @@ in
     bibata-cursors
     chromium
     helium
+    obsidian
 
     nautilus
     snapshot

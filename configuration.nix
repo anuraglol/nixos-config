@@ -57,6 +57,26 @@
     alsa.support32Bit = true;
     pulse.enable = true;
   };
+  services.mysql = {
+    enable = true;
+    package = pkgs.mariadb;
+  };
+
+  services.postgresql = {
+      enable = true;
+      package = pkgs.postgresql_16;
+
+      authentication = pkgs.lib.mkOverride 10 ''
+        local all all trust
+        host all all 127.0.0.1/32 trust
+        host all all ::1/128 trust
+      '';
+    };
+
+    services.redis.servers.local = {
+      enable = true;
+      port = 6379;
+    };
 
   services.power-profiles-daemon.enable = true;
   services.upower.enable = true;
@@ -131,6 +151,7 @@
       "networkmanager"
       "wheel"
       "docker"
+      "render"
     ];
     packages = with pkgs; [ ];
     shell = pkgs.fish;
@@ -152,12 +173,21 @@
 
   xdg.portal = {
     enable = true;
+    wlr = {
+      enable = true;
+      settings.screencast = {
+        chooser_type = "simple";
+        chooser_cmd = "${pkgs.slurp}/bin/slurp -f 'Monitor: %o' -or";
+      };
+    };
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
       pkgs.xdg-desktop-portal-gnome
+      pkgs.xdg-desktop-portal-wlr
     ];
     # Route the file picker to the GNOME backend (the pretty GTK4/Nautilus one);
     # let gtk handle everything else. wlr (from sway.nix) keeps screencast/screenshot.
+    config.common.default = "wlr";
     config.common."org.freedesktop.impl.portal.FileChooser" = [ "gnome" ];
     xdgOpenUsePortal = true;
   };
@@ -189,6 +219,7 @@
     devenv
     wl-clipboard
     ifuse
+    elmPackages.elm
   ];
 
   fonts.packages = with pkgs; [

@@ -226,7 +226,7 @@ in
       seat."*".xcursor_theme = "Bibata-Modern-Ice 20";
 
       output."*" = {
-        bg = "~/.config/background.jpg fill";
+        bg = "~/.config/bg.png fill";
         scale = "1.5";
       };
 
@@ -276,6 +276,7 @@ in
       workspace number 1
 
       for_window [app_id="org.gnome.Loupe"] floating enable
+      for_window [app_id="org.gnome.Nautilus"] floating enable
       for_window [app_id="org.gnome.Nautilus" title=".*Properties"] floating enable
       for_window [app_id="org.gnome.Nautilus" title=".*(Progress|Conflict|Error|Warning).*"] floating enable
       for_window [app_id="pavucontrol"] floating enable
