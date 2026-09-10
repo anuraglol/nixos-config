@@ -123,6 +123,7 @@ in
     ./modules/kitty.nix
     ./modules/git.nix
     ./modules/sway-home.nix
+    ./modules/mpv.nix
     vicinae.homeManagerModules.default
   ];
 

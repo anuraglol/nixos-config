@@ -280,10 +280,13 @@ in
       for_window [app_id="org.gnome.Nautilus" title=".*Properties"] floating enable
       for_window [app_id="org.gnome.Nautilus" title=".*(Progress|Conflict|Error|Warning).*"] floating enable
       for_window [app_id="pavucontrol"] floating enable
+
       for_window [window_role="pop-up"] floating enable
       for_window [window_role="bubble"] floating enable
       for_window [window_role="dialog"] floating enable
       for_window [window_type="dialog"] floating enable
+
+      for_window [app_id="xdg-desktop-portal-gtk"] floating enable, resize set 900 600, move position center
     '';
   };
 
