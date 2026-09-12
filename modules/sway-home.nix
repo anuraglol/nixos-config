@@ -207,7 +207,7 @@ in
           tap = "enabled";
           natural_scroll = "enabled";
           dwt = "enabled";
-          pointer_accel = "-0.253219";
+          pointer_accel = "-0.4";
         };
         "type:pointer" = {
           accel_profile = "flat";
@@ -226,7 +226,7 @@ in
       seat."*".xcursor_theme = "Bibata-Modern-Ice 20";
 
       output."*" = {
-        bg = "~/.config/bg.png fill";
+        bg = "~/.config/bg.jpg fill";
         scale = "1.5";
       };
 
