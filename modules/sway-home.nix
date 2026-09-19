@@ -207,7 +207,7 @@ in
           tap = "enabled";
           natural_scroll = "enabled";
           dwt = "enabled";
-          pointer_accel = "-0.4";
+          pointer_accel = "-0.45";
         };
         "type:pointer" = {
           accel_profile = "flat";
@@ -317,221 +317,180 @@ in
   };
 
   programs.waybar = {
-    enable = true;
-    systemd.enable = true;
-    settings.mainBar = {
-      layer = "top";
-      position = "top";
-      height = 30;
-      spacing = 0;
-      modules-left = [
-        "sway/workspaces"
-        "sway/mode"
-      ];
-      modules-center = [ "clock" ];
-      modules-right = [
-        "tray"
-        "idle_inhibitor"
-        "custom/nightlight"
-        "cpu"
-        "memory"
-        "bluetooth"
-        "network"
-        "pulseaudio"
-        "battery"
-      ];
-
-      "sway/workspaces" = {
-        format = "{icon}";
-        format-icons = {
-          "1" = "1";
-          "2" = "2";
-          "3" = "3";
-          "4" = "4";
-          "5" = "5";
-          "6" = "6";
-          "7" = "7";
-          "8" = "8";
-          "9" = "9";
-          "10" = "0";
-          focused = icon "f14fb";
-          urgent = icon "f14fb";
-        };
-        persistent-workspaces = {
-          "1" = [ ];
-          "2" = [ ];
-          "3" = [ ];
-          "4" = [ ];
-          "5" = [ ];
-        };
-      };
-
-      clock = {
-        format = "<span size='small'>{:%a %H:%M}</span>";
-        format-alt = "<span size='small'>{:%d %B  W%V %Y}</span>";
-        tooltip = false;
-      };
-
-      idle_inhibitor = {
-        format = "{icon}";
-        format-icons = {
-          activated = icon "f06e";
-          deactivated = icon "f070";
-        };
-        tooltip = false;
-      };
-
-      "custom/nightlight" = {
-        format = "{}";
-        return-type = "json";
-        exec = "${nightStatus}";
-        on-click = "${nightToggle}";
-        interval = 5;
-        signal = 8;
-      };
-
-      cpu = {
-        format = "${icon "f035b"} <span size='small'>{usage}%</span>";
-        interval = 5;
-      };
-      memory = {
-        format = "${icon "f1c0"} <span size='small'>{percentage}%</span>";
-        interval = 5;
-        tooltip-format = "RAM: {used:0.1f} GiB / {total:0.1f} GiB\nSwap: {swapUsed:0.1f} GiB / {swapTotal:0.1f} GiB";
-      };
-      bluetooth = {
-        format = icon "f00af";
-        format-off = icon "f00b2";
-        format-disabled = icon "f00b2";
-        format-connected = "${icon "f00b1"} {num_connections}";
-        on-click = "${btMenu}";
-        tooltip-format = "{controller_alias}";
-      };
-      network = {
-        format-wifi = "{icon} <span size='small'>{signalStrength}%</span>";
-        format-ethernet = icon "f0002";
-        format-disconnected = icon "f092e";
-        format-icons = map icon [
-          "f092f"
-          "f091f"
-          "f0922"
-          "f0925"
-          "f0928"
+      enable = true;
+      systemd.enable = true;
+      settings.mainBar = {
+        layer = "top";
+        position = "top";
+        height = 28;
+        spacing = 0;
+        modules-left = [
+          "sway/workspaces"
+          "sway/mode"
         ];
-        tooltip-format = "{essid} ({ipaddr})";
-        tooltip-format-disconnected = "Disconnected";
-        on-click = "${wifiMenu}";
-        interval = 5;
-      };
-      battery = {
-        format = "{icon} <span size='small'>{capacity}%</span>";
-        format-charging = "{icon} <span size='small'>{capacity}%</span>";
-        format-full = "{icon} <span size='small'>{capacity}%</span>";
-        format-icons = {
-          default = map icon [
-            "f007a"
-            "f007b"
-            "f007c"
-            "f007d"
-            "f007e"
-            "f007f"
-            "f0080"
-            "f0081"
-            "f0082"
-            "f0079"
-          ];
-          charging = map icon [
-            "f089c"
-            "f0086"
-            "f0087"
-            "f0088"
-            "f089d"
-            "f0089"
-            "f089e"
-            "f008a"
-            "f008b"
-            "f0085"
-          ];
-        };
-        states = {
-          warning = 20;
-          critical = 10;
-        };
-        on-click = "${powerMenu}";
-        interval = 2.5;
-      };
-      pulseaudio = {
-        format = "{icon} <span size='small'>{volume}%</span>";
-        format-muted = "${icon "f026"} <span size='small'>muted</span>";
-        format-icons.default = map icon [
-          "f026"
-          "f027"
-          "f028"
+        modules-center = [ "clock" ];
+        modules-right = [
+          "tray"
+          "idle_inhibitor"
+          "custom/nightlight"
+          "cpu"
+          "memory"
+          "bluetooth"
+          "network"
+          "pulseaudio"
+          "battery"
         ];
-        on-click = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-        scroll-step = 5;
+
+        "sway/workspaces" = {
+          format = "{name}";
+          persistent-workspaces = {
+            "1" = [ ];
+            "2" = [ ];
+            "3" = [ ];
+            "4" = [ ];
+            "5" = [ ];
+          };
+        };
+
+        clock = {
+          format = "{:%H:%M}";
+          format-alt = "{:%a %d %b %Y %H:%M}";
+          tooltip = false;
+        };
+
+        idle_inhibitor = {
+          format = "{icon}";
+          format-icons = {
+            activated = "caff";
+            deactivated = "caff";
+          };
+          tooltip = false;
+        };
+
+        "custom/nightlight" = {
+          format = "NL";
+          return-type = "json";
+          exec = "${nightStatus}";
+          on-click = "${nightToggle}";
+          interval = 5;
+          signal = 8;
+        };
+
+        cpu = {
+          format = "CPU {usage}%";
+          interval = 5;
+        };
+
+        memory = {
+          format = "RAM {used:0.1f} GiB";
+          interval = 5;
+          tooltip-format = "RAM: {used:0.1f} GiB / {total:0.1f} GiB\nSwap: {swapUsed:0.1f} GiB / {swapTotal:0.1f} GiB";
+        };
+
+        bluetooth = {
+          format = "BT on";
+          format-off = "BT off";
+          format-disabled = "BT disabled";
+          format-connected = "BT {num_connections}";
+          on-click = "${btMenu}";
+          tooltip-format = "{controller_alias}";
+        };
+
+        network = {
+          format-wifi = "NET {signalStrength}%";
+          format-ethernet = "ETH up";
+          format-disconnected = "NET off";
+          tooltip-format = "{essid} ({ipaddr})";
+          tooltip-format-disconnected = "Disconnected";
+          on-click = "${wifiMenu}";
+          interval = 5;
+        };
+
+        battery = {
+          format = "BAT {capacity}%";
+          format-charging = "BAT {capacity}%+";
+          format-full = "BAT 100%";
+          states = {
+            warning = 20;
+            critical = 10;
+          };
+          on-click = "${powerMenu}";
+          interval = 2.5;
+        };
+
+        pulseaudio = {
+          format = "VOL {volume}%";
+          format-muted = "VOL muted";
+          on-click = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+          scroll-step = 5;
+        };
       };
+
+      style = ''
+        * {
+          font-family: "JetBrainsMono Nerd Font Mono", "JetBrains Mono", monospace;
+          font-size: 14px;
+          font-weight: 500;
+          border: none;
+          border-radius: 0;
+          min-height: 0;
+        }
+        window#waybar {
+          background: ${base};
+          color: ${text};
+        }
+        .modules-left {
+          margin-left: 6px;
+        }
+        .modules-right {
+          margin-right: 6px;
+        }
+
+        #workspaces button {
+          all: initial;
+          font-family: "JetBrainsMono Nerd Font Mono", "JetBrains Mono", monospace;
+          font-size: 14px;
+          font-weight: 500;
+          color: ${muted};
+          padding: 0 6px;
+          margin: 0 1px;
+          min-width: 9px;
+        }
+        #workspaces button.focused,
+        #workspaces button.visible {
+          color: ${iris};
+        }
+        #workspaces button.urgent {
+          color: ${love};
+        }
+        #workspaces button.empty {
+          opacity: 0.45;
+        }
+
+        #clock {
+          font-size: 15px;
+          padding: 0 8px;
+          color: ${text};
+        }
+
+        #cpu, #memory, #network, #bluetooth, #pulseaudio, #battery,
+        #tray, #mode, #idle_inhibitor, #custom-nightlight {
+          padding: 0 7px;
+          color: ${text};
+        }
+
+        #idle_inhibitor.deactivated   { color: ${muted}; }
+        #idle_inhibitor.activated     { color: ${gold}; }
+        #custom-nightlight.active     { color: ${gold}; }
+        #pulseaudio.muted             { color: ${muted}; }
+        #network.disconnected         { color: ${muted}; }
+        #bluetooth.off,
+        #bluetooth.disabled           { color: ${muted}; }
+        #battery.charging             { color: ${foam}; }
+        #battery.warning:not(.charging)  { color: ${gold}; }
+        #battery.critical:not(.charging) { color: ${love}; }
+      '';
     };
-
-    style = ''
-      * {
-        font-family: "JetBrainsMono Nerd Font Mono", "JetBrains Mono", monospace;
-        font-size: 16px;
-        font-weight: 500;
-        border: none;
-        border-radius: 0;
-        min-height: 0;
-      }
-      window#waybar {
-        background: ${base};
-        color: ${text};
-      }
-      .modules-left {
-        margin-left: 6px;
-      }
-      .modules-right {
-        margin-right: 6px;
-      }
-
-      #workspaces button {
-        all: initial;
-        font-family: "JetBrainsMono Nerd Font Mono", "JetBrains Mono", monospace;
-        font-size: 16px;
-        color: ${muted};
-        padding: 0 7px;
-        margin: 0 1px;
-        min-width: 9px;
-      }
-      #workspaces button.focused,
-      #workspaces button.visible {
-        color: ${iris};
-      }
-      #workspaces button.urgent {
-        color: ${love};
-      }
-      #workspaces button.empty {
-        opacity: 0.45;
-      }
-
-      #clock,
-      #cpu, #memory, #network, #bluetooth, #pulseaudio, #battery,
-      #tray, #mode, #idle_inhibitor, #custom-nightlight {
-        padding: 0 8px;
-        color: ${text};
-      }
-
-      #idle_inhibitor.deactivated   { color: ${muted}; }
-      #idle_inhibitor.activated     { color: ${gold}; }
-      #custom-nightlight.active     { color: ${gold}; }
-      #pulseaudio.muted             { color: ${muted}; }
-      #network.disconnected         { color: ${muted}; }
-      #bluetooth.off,
-      #bluetooth.disabled           { color: ${muted}; }
-      #battery.charging             { color: ${foam}; }
-      #battery.warning:not(.charging)  { color: ${gold}; }
-      #battery.critical:not(.charging) { color: ${love}; }
-    '';
-  };
 
   services.mako = {
     enable = true;

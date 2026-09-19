@@ -1,20 +1,26 @@
 { pkgs, lib, ... }:
 
 let
+  setWakeupSources = pkgs.writeShellScript "set-wakeup-sources" ''
+    # Disable spurious PCIe bridge wakeup sources.
+    for dev in GPP1 GPP6 GPP7 GP19; do
+      if grep -q "^''${dev}.*enabled" /proc/acpi/wakeup; then
+        echo "$dev" > /proc/acpi/wakeup
+        echo "disabled $dev"
+      fi
+    done
+
+    # Enable primary XHCI controllers so USB keyboard / mouse / dongle can wake.
+    for dev in XHC0 XHC1; do
+      if grep -q "^''${dev}.*disabled" /proc/acpi/wakeup; then
+        echo "$dev" > /proc/acpi/wakeup
+        echo "enabled $dev"
+      fi
+    done
+  '';
 in
 {
-  boot.kernelPackages = pkgs.linuxPackagesFor (
-    pkgs.linux_latest.override {
-      argsOverride = rec {
-        version = "7.0.10";
-        modDirVersion = version;
-        src = pkgs.fetchurl {
-          url = "https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-${version}.tar.xz";
-          sha256 = "sha256-CUl362LCDj0ZOf6BqSlYofmH8zlEblMvqGljsoBOMtw=";
-        };
-      };
-    }
-  );
+  boot.kernelPackages = pkgs.linuxPackages;
 
   swapDevices = lib.mkForce [
     {
@@ -42,62 +48,64 @@ in
     SUBSYSTEM=="usb", KERNEL=="usb3", ATTR{power/wakeup}="enabled"
     SUBSYSTEM=="usb", KERNEL=="usb4", ATTR{power/wakeup}="enabled"
 
-    # The HS6209 2.4G wireless receiver is the only reliable s2idle wake source
-    # on this IdeaPad AMD platform (the internal keyboard / power button do not
-    # generate wake events). Keep it enabled and prevent USB autosuspend so it
-    # does not flake out between suspend cycles.
+    # The HS6209 2.4G wireless receiver is the most reliable s2idle wake source
+    # on this IdeaPad AMD platform. Keep it enabled and out of autosuspend so it
+    # does not flake out between suspend cycles. (Global USB autosuspend and PCIe
+    # ASPM are disabled via kernel params in configuration.nix to avoid the s2idle
+    # hang seen on the 6.18 LTS kernel.)
     SUBSYSTEM=="usb", ATTR{idVendor}=="32c2", ATTR{idProduct}=="0018", ATTR{power/wakeup}="enabled", ATTR{power/control}="on"
   '';
 
-  systemd.services.disable-gpp-wakeup = {
+  systemd.services.set-wakeup-sources = {
     path = [
       pkgs.gnugrep
       pkgs.coreutils
     ];
-    description = "Disable GPP/GP PCIe bridge wakeup sources";
+    description = "Configure ACPI wakeup sources";
     wantedBy = [ "multi-user.target" ];
     after = [ "systemd-udevd.service" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      ExecStart =
-        let
-          script = pkgs.writeShellScript "disable-gpp-wakeup" ''
-            for dev in GPP1 GPP6 GPP7 GP19; do
-              if grep -q "^''${dev}.*enabled" /proc/acpi/wakeup; then
-                echo "$dev" > /proc/acpi/wakeup
-                echo "disabled $dev"
-              fi
-            done
-          '';
-        in
-        "${script}";
+      ExecStart = "${setWakeupSources}";
     };
   };
 
-  systemd.services.enable-xhci-wakeup = {
+  # Re-apply right before suspend/hibernate in case something reset them.
+  systemd.services.set-wakeup-sources-pre-sleep = {
     path = [
       pkgs.gnugrep
       pkgs.coreutils
     ];
-    description = "Enable XHC0/XHC1 ACPI wakeup sources for USB keyboard/mouse";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "systemd-udevd.service" ];
+    description = "Re-apply ACPI wakeup sources before sleep";
+    before = [ "sleep.target" ];
+    wantedBy = [ "sleep.target" ];
     serviceConfig = {
       Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart =
-        let
-          script = pkgs.writeShellScript "enable-xhci-wakeup" ''
-            for dev in XHC0 XHC1; do
-              if grep -q "^''${dev}.*disabled" /proc/acpi/wakeup; then
-                echo "$dev" > /proc/acpi/wakeup
-                echo "enabled $dev"
-              fi
-            done
-          '';
-        in
-        "${script}";
+      ExecStart = "${setWakeupSources}";
+    };
+  };
+
+  # Re-apply after resume as well.
+  systemd.services.set-wakeup-sources-resume = {
+    path = [
+      pkgs.gnugrep
+      pkgs.coreutils
+    ];
+    description = "Re-apply ACPI wakeup sources after resume";
+    after = [
+      "suspend.target"
+      "hibernate.target"
+      "hybrid-sleep.target"
+    ];
+    wantedBy = [
+      "suspend.target"
+      "hibernate.target"
+      "hybrid-sleep.target"
+    ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${setWakeupSources}";
     };
   };
 

@@ -5,6 +5,8 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    nixpkgs-firmware.url = "github:NixOS/nixpkgs/8ce4ef6cb6f871616146b9fe26d2a5ae594e94fe";
+
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -28,6 +30,7 @@
       vicinae,
       herdr,
       helium-flake,
+      nixpkgs-firmware,
       ...
     }@inputs:
     let
@@ -44,7 +47,13 @@
           inherit system;
           modules = [
             {
-              nixpkgs.overlays = [ helium-flake.overlays.default ];
+              nixpkgs.overlays = [
+                  helium-flake.overlays.default
+
+                  (final: prev: {
+                    linux-firmware = nixpkgs-firmware.legacyPackages.${system}.linux-firmware;
+                  })
+                ];
             }
             ./configuration.nix
 

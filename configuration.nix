@@ -24,6 +24,13 @@
   boot.kernelParams = [
     "amdgpu.dcdebugmask=0x10"
     "nvme_core.default_ps_max_latency_us=0"
+
+    # s2idle on this Rembrandt IdeaPad hangs on the 6.18 LTS kernel unless
+    # PCIe ASPM and USB autosuspend are kept out of the sleep path. These two
+    # params stop the GPU/NVMe/USB4 controllers from entering states they cannot
+    # reliably exit, which is what caused the "suspend but never wake" symptom.
+    "pcie_aspm=off"
+    "usbcore.autosuspend=-1"
   ];
 
   hardware.amdgpu.initrd.enable = true;
@@ -98,6 +105,14 @@
     };
     extraHosts = ''
       127.0.0.1 local.app.beanstalk.fi
+    '';
+  };
+
+  services.caddy = {
+    enable = true;
+    virtualHosts."localhost".extraConfig = ''
+      tls internal
+      respond "Hello, world!"
     '';
   };
 

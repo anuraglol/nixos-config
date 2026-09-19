@@ -134,6 +134,10 @@ in
     nss
     awscli
     fff
+    ocaml
+    ollama
+    llama-cpp
+    zig
 
     unstable-pkgs.claude-code
     mcp-nixos
