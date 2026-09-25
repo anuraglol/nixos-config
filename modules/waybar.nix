@@ -87,6 +87,20 @@ in
 
       "sway/workspaces" = {
         format = "{name}";
+        format-icons = {
+          "1" = "1";
+          "2" = "2";
+          "3" = "3";
+          "4" = "4";
+          "5" = "5";
+          "6" = "6";
+          "7" = "7";
+          "8" = "8";
+          "9" = "9";
+          "10" = "0";
+          focused = icon "f14fb";
+          urgent = icon "f14fb";
+        };
         persistent-workspaces = {
           "1" = [ ];
           "2" = [ ];
@@ -98,7 +112,7 @@ in
 
       clock = {
         format = "{:%H:%M}";
-        format-alt = "{:%a %d %b %Y %H:%M}";
+        format-alt = "{:%a %d %b %Y}";
         tooltip = false;
       };
 
@@ -182,6 +196,7 @@ in
       window#waybar {
         background: ${base};
         color: ${text};
+        min-height: 28px;
       }
       .modules-left {
         margin-left: 6px;
@@ -200,13 +215,28 @@ in
         margin: 0 1px;
         min-width: 9px;
       }
-      #workspaces button.focused,
+
+      #workspaces button.focused {
+        color: ${iris};
+        background: ${surface};
+        border-radius: 4px;
+        padding: 0 8px;
+        margin: 0px 0px;
+        min-height: 24px;
+      }
+
       #workspaces button.visible {
         color: ${iris};
       }
+
       #workspaces button.urgent {
         color: ${love};
+        background: ${surface};
+        border-radius: 4px;
+        padding: 0 8px;
+        margin: 3px 2px;
       }
+
       #workspaces button.empty {
         opacity: 0.45;
       }

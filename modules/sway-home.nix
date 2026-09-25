@@ -8,6 +8,9 @@ let
 
   swaymsg = "${pkgs.sway}/bin/swaymsg";
   systemctl = "${pkgs.systemd}/bin/systemctl";
+  # Always wake outputs before suspending. Suspending while Sway has the
+  # display powered off reliably hangs s2idle on this IdeaPad/Rembrandt setup.
+  suspendCmd = "${swaymsg} 'output * power on' && ${systemctl} suspend";
 
   base = "#191724";
   surface = "#1f1d2e";
@@ -233,7 +236,7 @@ in
       keybindings = lib.mkOptionDefault (
         moveFollow
         // {
-          "${mod}+shift+z" = "systemctl suspend";
+          "${mod}+shift+z" = "exec ${suspendCmd}";
 
           "${mod}+w" = "kill";
           "${mod}+f" = "fullscreen toggle";
@@ -293,7 +296,9 @@ in
   services.swayidle = {
     enable = true;
     events = {
-      before-sleep = lockBg;
+      # Wake the outputs before locking/suspending so we never enter s2idle
+      # while Sway has the display powered off.
+      before-sleep = "${swaymsg} 'output * power on'; ${lockBg}";
       after-resume = "${swaymsg} 'output * power on'";
     };
     timeouts = [
@@ -308,7 +313,7 @@ in
       }
       {
         timeout = 600;
-        command = "${systemctl} suspend";
+        command = suspendCmd;
       }
     ];
   };

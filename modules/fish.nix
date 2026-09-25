@@ -1,6 +1,10 @@
 { ... }:
 
 {
+  home.sessionPath = [
+    "$HOME/.cargo/bin"
+  ];
+
   programs.fish = {
     enable = true;
 

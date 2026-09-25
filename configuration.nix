@@ -10,6 +10,7 @@
     ./hardware-configuration.nix
     ./modules/hardware.nix
     ./modules/sway.nix
+    ./modules/niri.nix
     ./modules/greeter.nix
   ];
 
@@ -97,7 +98,7 @@
   };
 
   services.caddy = {
-    enable = true;
+    enable = false;
     virtualHosts."localhost".extraConfig = ''
       tls internal
       respond "Hello, world!"
@@ -164,6 +165,7 @@
   programs.dconf.enable = true;
   programs.fish.enable = true;
   programs.yazi.enable = true;
+  programs.niri.enable = true;
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [

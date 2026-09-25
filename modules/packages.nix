@@ -138,6 +138,13 @@ in
     ollama
     llama-cpp
     zig
+    caddy
+    cloudflared
+    clang
+    rustc
+    cargo
+    SDL2
+    llvm
 
     unstable-pkgs.claude-code
     mcp-nixos
