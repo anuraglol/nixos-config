@@ -10,7 +10,6 @@
     ./hardware-configuration.nix
     ./modules/hardware.nix
     ./modules/sway.nix
-    ./modules/niri.nix
     ./modules/greeter.nix
   ];
 
@@ -165,7 +164,6 @@
   programs.dconf.enable = true;
   programs.fish.enable = true;
   programs.yazi.enable = true;
-  programs.niri.enable = true;
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
