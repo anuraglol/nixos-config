@@ -9,7 +9,7 @@
   imports = [
     ./hardware-configuration.nix
     ./modules/hardware.nix
-    ./modules/sway.nix
+    # ./modules/sway.nix
     ./modules/greeter.nix
   ];
 
@@ -194,11 +194,11 @@
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
       pkgs.xdg-desktop-portal-gnome
-      pkgs.xdg-desktop-portal-wlr
+      # pkgs.xdg-desktop-portal-wlr
     ];
     # Route the file picker to the GNOME backend (the pretty GTK4/Nautilus one);
-    # let gtk handle everything else. wlr (from sway.nix) keeps screencast/screenshot.
-    config.common.default = "wlr";
+    # let gtk handle everything else.
+    config.common.default = "gnome";
     config.common."org.freedesktop.impl.portal.FileChooser" = [ "gnome" ];
     xdgOpenUsePortal = true;
   };
@@ -241,7 +241,7 @@
 
   fonts.packages = with pkgs; [
     jetbrains-mono
-    nerd-fonts.jetbrains-mono # patched glyphs for waybar icons
+    # nerd-fonts.jetbrains-mono # patched glyphs for waybar icons
     fira-code
   ];
 
