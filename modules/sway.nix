@@ -25,7 +25,8 @@
   security.polkit.enable = true;
 
   services.gnome.gnome-keyring.enable = true;
-  security.pam.services.ly.enableGnomeKeyring = true;
+  # Disabled along with ly while using GDM; GDM unlocks gnome-keyring.
+  # security.pam.services.ly.enableGnomeKeyring = true;
 
   services.gvfs.enable = true;
   services.tumbler.enable = true;

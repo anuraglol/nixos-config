@@ -180,6 +180,19 @@ in
     };
   };
 
+  # Vicinae is already auto-started via systemd below, but also register it as
+  # a GNOME startup app so it shows up in Settings > Startup Applications.
+  home.file.".config/autostart/vicinae.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Vicinae
+    Exec=vicinae server --replace
+    Terminal=false
+    Icon=vicinae
+    Categories=Utility;Accessibility;
+    StartupNotify=false
+  '';
+
   programs.vicinae = {
     enable = true;
     package = pkgs.vicinae;

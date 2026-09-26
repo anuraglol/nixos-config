@@ -210,7 +210,7 @@ in
           tap = "enabled";
           natural_scroll = "enabled";
           dwt = "enabled";
-          pointer_accel = "-0.45";
+          pointer_accel = "-0.50";
         };
         "type:pointer" = {
           accel_profile = "flat";

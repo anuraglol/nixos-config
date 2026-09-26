@@ -43,6 +43,14 @@
     LC_TIME = "en_IN";
   };
 
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
+
+  services.gnome.core-apps.enable = false;
+  services.gnome.core-developer-tools.enable = false;
+  services.gnome.games.enable = false;
+  environment.gnome.excludePackages = with pkgs; [ gnome-tour gnome-user-docs ];
+
   services.printing.enable = false;
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
@@ -223,6 +231,12 @@
     wl-clipboard
     ifuse
     elmPackages.elm
+
+    gnomeExtensions.blur-my-shell
+    gnomeExtensions.caffeine
+    gnomeExtensions.clipboard-indicator
+    gnomeExtensions.vicinae
+    gnomeExtensions.system-monitor
   ];
 
   fonts.packages = with pkgs; [

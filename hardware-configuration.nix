@@ -13,6 +13,17 @@
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
+  boot.kernelParams = [
+    # Workaround for display engine freeze upon s2idle exit
+     "amdgpu.dcdebugmask=0x10"
+
+     # Prevents race conditions during display power-gating recovery
+     "amdgpu.sg_display=0"
+
+     # Ensures the AMD P-State EPP driver properly negotiates lowest-frequency transitions
+     "amd_pstate=active"
+  ];
+
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/078d8889-a39f-4c5b-be1f-0c6158fb316f";
       fsType = "ext4";
