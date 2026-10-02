@@ -142,6 +142,7 @@ in
     cloudflared
     clang
     rustc
+    rustfmt
     cargo
     SDL2
     llvm

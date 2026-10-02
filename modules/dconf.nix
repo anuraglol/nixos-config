@@ -201,7 +201,6 @@
       user-enabled = true;
     };
     "org/gnome/shell/extensions/clipboard-indicator" = {
-      toggle-menu = [ "<Super>v" ];
     };
     "org/gnome/shell/extensions/just-perfection" = {
       activities-button = true;

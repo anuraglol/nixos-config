@@ -49,7 +49,14 @@
   services.gnome.core-apps.enable = false;
   services.gnome.core-developer-tools.enable = false;
   services.gnome.games.enable = false;
-  environment.gnome.excludePackages = with pkgs; [ gnome-tour gnome-user-docs ];
+  environment.gnome.excludePackages = with pkgs; [
+    gnome-tour
+    gnome-user-docs
+  ];
+
+  # Don't restart the display manager on rebuild; doing so kills the active
+  # graphical session and logs the user out.
+  systemd.services.display-manager.restartIfChanged = false;
 
   services.printing.enable = false;
   services.pulseaudio.enable = false;
@@ -66,20 +73,20 @@
   };
 
   services.postgresql = {
-      enable = true;
-      package = pkgs.postgresql_16;
+    enable = true;
+    package = pkgs.postgresql_16;
 
-      authentication = pkgs.lib.mkOverride 10 ''
-        local all all trust
-        host all all 127.0.0.1/32 trust
-        host all all ::1/128 trust
-      '';
-    };
+    authentication = pkgs.lib.mkOverride 10 ''
+      local all all trust
+      host all all 127.0.0.1/32 trust
+      host all all ::1/128 trust
+    '';
+  };
 
-    services.redis.servers.local = {
-      enable = true;
-      port = 6379;
-    };
+  services.redis.servers.local = {
+    enable = true;
+    port = 6379;
+  };
 
   services.power-profiles-daemon.enable = true;
   services.upower.enable = true;
@@ -168,6 +175,7 @@
     shell = pkgs.fish;
   };
 
+  programs.niri.enable = true;
   programs.firefox.enable = true;
   programs.dconf.enable = true;
   programs.fish.enable = true;
@@ -184,24 +192,26 @@
 
   xdg.portal = {
     enable = true;
-    wlr = {
-      enable = true;
-      settings.screencast = {
-        chooser_type = "simple";
-        chooser_cmd = "${pkgs.slurp}/bin/slurp -f 'Monitor: %o' -or";
-      };
-    };
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
       pkgs.xdg-desktop-portal-gnome
-      # pkgs.xdg-desktop-portal-wlr
+      pkgs.xdg-desktop-portal-hyprland
     ];
     # Route the file picker to the GNOME backend (the pretty GTK4/Nautilus one);
-    # let gtk handle everything else.
-    config.common.default = "gnome";
+    # let gtk handle everything else. In a Hyprland session the Hyprland portal
+    # takes precedence for screencast/window sharing.
+    config.common.default = [
+      "hyprland"
+      "gnome"
+    ];
     config.common."org.freedesktop.impl.portal.FileChooser" = [ "gnome" ];
+    config.hyprland.default = [
+      "hyprland"
+      "gnome"
+    ];
     xdgOpenUsePortal = true;
   };
+
   qt = {
     enable = true;
     platformTheme = "gnome";

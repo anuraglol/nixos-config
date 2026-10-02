@@ -122,8 +122,8 @@ in
     ./modules/zed-editor.nix
     ./modules/kitty.nix
     ./modules/git.nix
-    # ./modules/sway-home.nix
     ./modules/mpv.nix
+    ./modules/niri.nix
     vicinae.homeManagerModules.default
   ];
 
@@ -155,8 +155,7 @@ in
   };
 
   # Place the Rosé Pine theme file in the exact path btop expects.
-  xdg.configFile."btop/themes/rose-pine.theme".text =
-    lib.generators.toINI { } rosePineBtop;
+  xdg.configFile."btop/themes/rose-pine.theme".text = lib.generators.toINI { } rosePineBtop;
 
   home.sessionVariables.NIXOS_OZONE_WL = "1";
   # Force GTK apps (incl. Zen/Firefox in its default "auto" mode) to use the

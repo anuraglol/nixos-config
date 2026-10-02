@@ -14,8 +14,8 @@ let
     let
       imod = a: b: a - (a / b) * b;
       hexChars = pkgs.lib.stringToCharacters "0123456789abcdef";
-      nibble = n: builtins.elemAt hexChars (imod n 16);
-      toHex4 = n: "${nibble (n / 4096)}${nibble (n / 256)}${nibble (n / 16)}${nibble n}";
+      nibble = n: "${nibble' (n / 4096)}${nibble' (n / 256)}${nibble' (n / 16)}${nibble' n}";
+      nibble' = n: builtins.elemAt hexChars (imod n 16);
       hexVal = {
         "0" = 0; "1" = 1; "2" = 2; "3" = 3; "4" = 4;
         "5" = 5; "6" = 6; "7" = 7; "8" = 8; "9" = 9;
@@ -29,14 +29,14 @@ let
       n = hexToInt cp;
     in
     if n < 65536 then
-      builtins.fromJSON ''"\u${toHex4 n}"''
+      builtins.fromJSON ''"\u${nibble n}"''
     else
       let
         c = n - 65536;
         hi = 55296 + (c / 1024);
         lo = 56320 + (imod c 1024);
       in
-      builtins.fromJSON ''"\u${toHex4 hi}\u${toHex4 lo}"'';
+      builtins.fromJSON ''"\u${nibble hi}\u${nibble lo}"'';
 
   nightToggle = pkgs.writeShellScript "nightlight-toggle" ''
     if ${pkgs.procps}/bin/pgrep -x wlsunset >/dev/null; then
@@ -69,8 +69,8 @@ in
       height = 28;
       spacing = 0;
       modules-left = [
-        "sway/workspaces"
-        "sway/mode"
+        "hyprland/workspaces"
+        "hyprland/submap"
       ];
       modules-center = [ "clock" ];
       modules-right = [
@@ -85,7 +85,7 @@ in
         "battery"
       ];
 
-      "sway/workspaces" = {
+      "hyprland/workspaces" = {
         format = "{name}";
         format-icons = {
           "1" = "1";
@@ -98,7 +98,7 @@ in
           "8" = "8";
           "9" = "9";
           "10" = "0";
-          focused = icon "f14fb";
+          active = icon "f14fb";
           urgent = icon "f14fb";
         };
         persistent-workspaces = {
@@ -216,6 +216,7 @@ in
         min-width: 9px;
       }
 
+      #workspaces button.active,
       #workspaces button.focused {
         color: ${iris};
         background: ${surface};
