@@ -16,7 +16,7 @@ let
     paths = [ pkgs.qbittorrent ];
     nativeBuildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
-      wrapProgram $out/bin/qbittorrent --set QT_SCALE_FACTOR 1.5
+      wrapProgram $out/bin/qbittorrent --set QT_SCALE_FACTOR 1.25
     '';
   };
 
@@ -139,7 +139,6 @@ in
     llama-cpp
     zig
     caddy
-    cloudflared
     clang
     rustc
     rustfmt
@@ -151,5 +150,10 @@ in
     mcp-nixos
     herdr.packages.${pkgs.system}.default
     httpie-appimage
+
+    # Steam/gaming utilities
+    mangohud
+    gamescope
+    protontricks
   ];
 }

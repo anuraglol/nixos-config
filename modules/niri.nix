@@ -34,6 +34,7 @@ let
   '';
   systemctlBin = "${pkgs.systemd}/bin/systemctl";
   swayosdBin = "${pkgs.swayosd}/bin/swayosd-client";
+  niriBin = "${pkgs.niri}/bin/niri";
 
   # ─────────────────────────────────────────────────────────────
   # Screenshots
@@ -118,7 +119,12 @@ let
   # ─────────────────────────────────────────────────────────────
 
   lock = "${swaylockBin}";
-  suspend = "${systemctlBin} suspend";
+  # Wake outputs before suspending. Keeping the display pipeline powered
+  # keeps the SoC out of the deepest S0ix substate whose exit path hangs
+  # on this platform. ";" not "&&" so an IPC failure can never swallow
+  # the suspend request. (niri msg output <name> on needs an output name;
+  # power-on-monitors is the global variant.)
+  suspend = "${niriBin} msg action power-on-monitors; ${systemctlBin} suspend";
 
 in
 {
@@ -238,7 +244,7 @@ in
             tap
             natural-scroll
             dwt
-            accel-speed -0.55
+            accel-speed -0.50
         }
 
         mouse {
@@ -801,7 +807,9 @@ in
     enable = true;
 
     events = {
-      before-sleep = lock;
+      # Wake outputs before locking/suspending so we never descend into the
+      # deepest S0ix state with the display pipeline off (hangs on exit).
+      before-sleep = "${niriBin} msg action power-on-monitors; ${lock}";
       lock = lock;
       unlock = "";
     };

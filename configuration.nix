@@ -43,16 +43,17 @@
     LC_TIME = "en_IN";
   };
 
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
+  # GNOME / GDM disabled; using ly instead.
+  # services.displayManager.gdm.enable = true;
+  # services.desktopManager.gnome.enable = true;
 
-  services.gnome.core-apps.enable = false;
-  services.gnome.core-developer-tools.enable = false;
-  services.gnome.games.enable = false;
-  environment.gnome.excludePackages = with pkgs; [
-    gnome-tour
-    gnome-user-docs
-  ];
+  # services.gnome.core-apps.enable = false;
+  # services.gnome.core-developer-tools.enable = false;
+  # services.gnome.games.enable = false;
+  # environment.gnome.excludePackages = with pkgs; [
+  #   gnome-tour
+  #   gnome-user-docs
+  # ];
 
   # Don't restart the display manager on rebuild; doing so kills the active
   # graphical session and logs the user out.
@@ -94,7 +95,13 @@
     enable = true;
   };
 
+  boot.kernel.sysctl = {
+    "net.ipv4.ip_forward" = 1;
+    "net.ipv6.conf.all.forwarding" = 1;
+  };
+
   services.usbmuxd.enable = true;
+  services.gvfs.enable = true;
 
   services.flatpak.enable = true;
   networking = {
@@ -124,29 +131,29 @@
     enable = true;
   };
 
-  services.stubby = {
-    enable = true;
-    settings = pkgs.stubby.passthru.settingsExample // {
-      upstream_recursive_servers = [
-        {
-          address_data = "1.1.1.1";
-          tls_auth_name = "cloudflare-dns.com";
-        }
-        {
-          address_data = "1.0.0.1";
-          tls_auth_name = "cloudflare-dns.com";
-        }
-        {
-          address_data = "8.8.8.8";
-          tls_auth_name = "dns.google";
-        }
-        {
-          address_data = "8.8.4.4";
-          tls_auth_name = "dns.google";
-        }
-      ];
-    };
-  };
+  # services.stubby = {
+  #   enable = true;
+  #   settings = pkgs.stubby.passthru.settingsExample // {
+  #     upstream_recursive_servers = [
+  #       {
+  #         address_data = "1.1.1.1";
+  #         tls_auth_name = "cloudflare-dns.com";
+  #       }
+  #       {
+  #         address_data = "1.0.0.1";
+  #         tls_auth_name = "cloudflare-dns.com";
+  #       }
+  #       {
+  #         address_data = "8.8.8.8";
+  #         tls_auth_name = "dns.google";
+  #       }
+  #       {
+  #         address_data = "8.8.4.4";
+  #         tls_auth_name = "dns.google";
+  #       }
+  #     ];
+  #   };
+  # };
 
   networking.firewall = {
     enable = true;
@@ -180,6 +187,36 @@
   programs.dconf.enable = true;
   programs.fish.enable = true;
   programs.yazi.enable = true;
+
+  # Steam + gaming support
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+    localNetworkGameTransfers.openFirewall = true;
+  };
+  programs.gamemode.enable = true;
+  hardware.graphics.enable = true;
+  hardware.graphics.enable32Bit = true;
+
+  # Roblox via Sober (Flatpak). The service adds the Sober repo and installs the
+  # app on the first graphical login after a rebuild.
+  systemd.user.services.sober-install = {
+    description = "Install Roblox Sober from its Flatpak repo";
+    wantedBy = [ "default.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "sober-install" ''
+        set -euo pipefail
+        export PATH="${pkgs.flatpak}/bin:${pkgs.gnugrep}/bin:$PATH"
+        flatpak --user remote-add --if-not-exists sober https://sober.vinegarhq.org/repo/sober.flatpakrepo
+        if ! flatpak --user list --app | grep -q org.vinegarhq.Sober; then
+          flatpak --user install -y sober org.vinegarhq.Sober
+        fi
+      '';
+    };
+  };
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
@@ -230,23 +267,25 @@
     nixd
     package-version-server
     rust-analyzer
+    rustup
     stdenv.cc
     gnumake
     xdg-utils
     libnotify
     gtop
-    cloudflare-warp
     uv
     devenv
     wl-clipboard
     ifuse
+    libimobiledevice
     elmPackages.elm
 
-    gnomeExtensions.blur-my-shell
-    gnomeExtensions.caffeine
-    gnomeExtensions.clipboard-indicator
-    gnomeExtensions.vicinae
-    gnomeExtensions.system-monitor
+    # GNOME extensions (disabled while not running GNOME).
+    # gnomeExtensions.blur-my-shell
+    # gnomeExtensions.caffeine
+    # gnomeExtensions.clipboard-indicator
+    # gnomeExtensions.vicinae
+    # gnomeExtensions.system-monitor
   ];
 
   fonts.packages = with pkgs; [

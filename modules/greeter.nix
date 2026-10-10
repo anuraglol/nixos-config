@@ -8,7 +8,7 @@
 # ly is a TUI greeter: runs on a bare TTY, no X/GNOME dependency. Pick the
 # session (GNOME / Sway) with left/right, type password, enter.
 {
-  # Disabled while trying GNOME; GDM in configuration.nix is the greeter
-  # and lists both GNOME and Sway sessions.
-  # services.displayManager.ly.enable = true;
+  # TUI greeter. Runs on a bare TTY and lists every NixOS session
+  # (Niri, Hyprland, Sway, GNOME if re-enabled, etc.).
+  services.displayManager.ly.enable = true;
 }

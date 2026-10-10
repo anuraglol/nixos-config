@@ -12,3 +12,4 @@ cat <<EOF > .gitignore
 *~
 EOF
 opencode.json
+result

@@ -17,12 +17,28 @@ let
       nibble = n: "${nibble' (n / 4096)}${nibble' (n / 256)}${nibble' (n / 16)}${nibble' n}";
       nibble' = n: builtins.elemAt hexChars (imod n 16);
       hexVal = {
-        "0" = 0; "1" = 1; "2" = 2; "3" = 3; "4" = 4;
-        "5" = 5; "6" = 6; "7" = 7; "8" = 8; "9" = 9;
-        "a" = 10; "b" = 11; "c" = 12; "d" = 13; "e" = 14; "f" = 15;
+        "0" = 0;
+        "1" = 1;
+        "2" = 2;
+        "3" = 3;
+        "4" = 4;
+        "5" = 5;
+        "6" = 6;
+        "7" = 7;
+        "8" = 8;
+        "9" = 9;
+        "a" = 10;
+        "b" = 11;
+        "c" = 12;
+        "d" = 13;
+        "e" = 14;
+        "f" = 15;
       };
       hexToInt =
-        s: pkgs.lib.foldl' (acc: c: acc * 16 + hexVal.${c}) 0 (pkgs.lib.stringToCharacters (pkgs.lib.toLower s));
+        s:
+        pkgs.lib.foldl' (acc: c: acc * 16 + hexVal.${c}) 0 (
+          pkgs.lib.stringToCharacters (pkgs.lib.toLower s)
+        );
     in
     cp:
     let
@@ -119,8 +135,8 @@ in
       idle_inhibitor = {
         format = "{icon}";
         format-icons = {
-          activated = "caff";
-          deactivated = "caff";
+          activated = "CF";
+          deactivated = "CF";
         };
         tooltip = false;
       };

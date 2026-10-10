@@ -3,6 +3,7 @@
 {
   home.sessionPath = [
     "$HOME/.cargo/bin"
+    "$HOME/.bun/bin"
   ];
 
   programs.fish = {
@@ -20,6 +21,8 @@
       pc = "nix run nixpkgs#process-compose -- -f process-compose.yaml";
       fupdate = "nix flake update --flake ~/Documents/nixos-config";
       tnux = "tmux -u";
+      hoshi-dev = "$HOME/Documents/dev/hoshi/target/release/hoshi";
+      hh = "hoshi";
     };
 
     interactiveShellInit = ''

@@ -1,79 +1,111 @@
 # Suspend / s2idle on the IdeaPad Rembrandt
 
+> **Read this before touching anything suspend-related. The workarounds in
+> `modules/hardware.nix` and `hardware-configuration.nix` are LOAD-BEARING.
+> They have been stripped as "cargo cult" at least twice; each time the
+> s2idle resume hang returned within days. Do not remove them without
+> evidence from `amd_s2idle.py` proving they are unnecessary.**
+
 ## Symptom
 
-After switching from the custom pinned kernel to the NixOS default (`linuxPackages`, 6.18.52 on this branch), the laptop enters s2idle but never resumes — lid open, keyboard, power button, and USB receiver all fail to wake it. A hard reboot is required.
+Machine enters s2idle and never resumes: lid open, keyboard, touchpad, power
+button, and USB receiver all fail to wake it. Hard reboot required. The
+journal of the failed boot stops dead at `PM: suspend entry (s2idle)`.
 
-Later observation: the hang only happens when the waybar **caffeine/idle inhibitor is off**. With the inhibitor on, suspend and resume work reliably.
+Comes and goes in multi-day streaks, which makes every "fix" look correct
+for a while. Always verify over several days and several suspend cycles.
 
-## Diagnosis
+## What it is NOT
 
-- `/proc/acpi/wakeup` showed `XHC0`, `XHC1`, `LID0` enabled.
-- `/sys/.../PNP0C0D:00/power/wakeup` and the power button were enabled.
-- The HS6209 receiver had `power/wakeup=enabled` and `power/control=on`.
-- Journal from failed suspends stopped dead at `PM: suspend entry (s2idle)`.
-- Wakeup sources were not the problem.
+Verified live on 2026-10-05, all correctly armed:
 
-The caffeine clue points to `swayidle`: when the idle inhibitor is off, `swayidle` turns the display off at 300s and suspends at 600s. Suspending while Sway has the display powered off hangs this AMD Rembrandt platform in s2idle. With caffeine on, the display never auto-powers off, so suspend resumes normally.
+- `/proc/acpi/wakeup`: `LID0`, `XHC0`–`XHC4` enabled, everything else
+  disabled (enforced by `set-wakeup-sources` at boot, on USB hotplug, and
+  before every suspend — see `modules/hardware.nix`). Note: this machine has
+  no `PWRB` entry; the power button wakes via a different path.
+- `serio0` (internal PS/2 keyboard): `power/wakeup=enabled`.
+- `i2c-FTCS0038:00` (touchpad) and `i2c-ITE8350:00` (EC): wakeup enabled.
+- USB receiver (HS6209) and all xHCI PCI devices: wakeup enabled.
 
-Confirmed by running `systemctl suspend` directly while the display had been powered off by `swayidle`: the system did not resume.
+Wakeup sources were never the problem.
 
-## What was removed
+## Root cause (best current understanding)
 
-All cargo-cult suspend workarounds were stripped:
+The platform's **deepest S0ix substate has a broken exit path**. Once the
+SoC descends fully, nothing can wake it. Anything that keeps the machine in
+a shallower substate masks the bug.
 
-- `configuration.nix`: removed `amdgpu.dcdebugmask`, `nvme_core.default_ps_max_latency_us`, `pcie_aspm=off`, `usbcore.autosuspend=-1`.
-- `modules/hardware.nix`: removed the `setWakeupSources` script, the PCI/USB wakeup udev rules, and the three pre-sleep/resume systemd services.
+Hard evidence (journal archaeology, 2026-10-05):
 
-## Actual fix
+- Boot with `cloudflare-warp` installed: **7/7 suspends resumed**, including
+  an 8-hour sleep. warp-svc's persistent WireGuard keepalives keep the SoC
+  from reaching the deepest state.
+- The very next generation removed warp — and **only** warp (verified with
+  `nix store diff-closures`; identical kernel, initrd, cmdline, udev rules):
+  **4/4 suspends hung** across four consecutive boots.
 
-Two parts:
+This also explains the older observations:
 
-1. Use NixOS's standard latest kernel (7.2.6 on this branch), which contains the s2idle fixes the custom 7.x kernel had:
+- "Caffeine/idle-inhibitor on = suspend works": display on keeps the
+  pipeline powered → shallower sleep → resumes.
+- "Suspending with outputs off hangs": display off → deeper descent → hang.
+- "Randomly comes back every other day": whether the SoC reaches the deepest
+  state depends on whatever background activity exists at the time.
 
-   ```nix
-   # modules/hardware.nix
-   boot.kernelPackages = pkgs.linuxPackages_latest;
-   ```
+## The defense (all layers, all load-bearing)
 
-2. **Never suspend while Sway has powered the outputs off.**
+1. **Kernel params** (`modules/hardware.nix`) — keep devices/links from
+   powering down far enough for the SoC to descend fully:
+   - `pcie_aspm=off` — PCIe links stay up.
+   - `nvme_core.default_ps_max_latency_us=0` — NVMe never enters deep APST.
+   - `usbcore.autosuspend=-1` — USB stays runtime-resumed.
+   - (`amdgpu.dcdebugmask=0x10`, `amdgpu.sg_display=0`, `amd_pstate=active`
+     live in `hardware-configuration.nix`.)
+2. **Never suspend with the display pipeline off** — compositor-side:
+   - Niri: `suspend` keybind/timeout runs `niri msg action power-on-monitors`
+     first, and swayidle's `before-sleep` does the same (`modules/niri.nix`).
+     Note: `niri msg output on` is INVALID syntax (needs an output name);
+     `power-on-monitors` is the global action. Use `;` not `&&` so an IPC
+     failure can't swallow the suspend request.
+3. **Wakeup source policy** (`set-wakeup-sources` in `modules/hardware.nix`):
+   enforced at boot, on USB hotplug, and before every suspend. Defensive —
+   verified not to be the root cause, but cheap insurance.
+4. **Diagnostics always on**: `pm_debug_messages=1` via tmpfiles, so the
+   next hang's journal shows exactly which device was mid-suspend.
 
-   - Removed the 300s `output * power off` timeout from `swayidle`. The display stays on until the 600s auto-suspend.
-   - Added a `suspendCmd` that wakes outputs before suspending, used by:
-     - the `Mod+Shift+z` keybinding,
-     - the 600s `swayidle` auto-suspend timeout,
-     - the `before-sleep` event (runs before `swayidle` triggers suspend).
+Do NOT add `mem_sleep_default=deep` — firmware doesn't advertise S3; the
+failed deep attempt itself breaks resume (amd-s2idle warns about this).
 
-   ```nix
-   # modules/sway-home.nix
-   suspendCmd = "${swaymsg} 'output * power on' && ${systemctl} suspend";
-   ```
+## If it ever hangs again
 
-This avoids entering s2idle while the display is in the powered-off state that triggers the hang.
-
-## Files involved
-
-- `modules/hardware.nix` — kernel package selection.
-- `modules/sway-home.nix` — suspend command and `swayidle` config.
-- `configuration.nix` — no suspend-related kernel parameters remain.
-- `modules/sway.nix` — keeps the explicit `HandleLidSwitch=suspend` logind setting.
-
-## Trade-offs
-
-The display now stays on for the full 10-minute idle period instead of blanking at 5 minutes. This costs a little idle battery life, but it keeps s2idle reliable. The screen still locks at 5 minutes for security.
-
-## Validation
+After the hard reboot:
 
 ```bash
-sudo nixos-rebuild switch --flake .#neko
+# Which device was mid-suspend when it died (pm_debug_messages is on):
+journalctl -b -1 | grep -iE "PM:|suspend|s2idle"
 ```
 
-Then test with caffeine **off**:
-1. `Mod+Shift+z` → wait 5s → keypress.
-2. Leave idle for 10+ minutes so `swayidle` auto-suspends → keypress.
-3. Close lid → open lid.
+Then capture an actual s0ix report and use it to justify (or retire) the
+kernel params above:
 
-If any path still fails, capture from the next boot:
 ```bash
-journalctl -b 0 | grep -iE "suspend|resume|s2idle|PM:|amdgpu|xhci|nvme|amd_pmc|swayidle"
+sudo amd_s2idle.py   # from kernel source tools/amd/pmc; needs a suspend cycle
+sudo cat /sys/kernel/debug/amd_pmc/s0ix_stats
 ```
+
+Only remove the params if the report shows the deepest state is reachable
+AND exits cleanly across multiple cycles.
+
+## Testing safely (no risk of losing work)
+
+Program an RTC alarm so the machine wakes itself even if input wake fails:
+
+```bash
+sudo rtcwake -m no -s 60
+systemctl suspend
+# machine must come back on its own within ~60s
+```
+
+Then test each wake source: internal keyboard, touchpad, lid open/close,
+USB receiver. Note kernel params require a REBOOT to take effect — a plain
+`nixos-rebuild switch` is not enough.
