@@ -244,7 +244,7 @@ in
             tap
             natural-scroll
             dwt
-            accel-speed -0.50
+            accel-speed -0.55
         }
 
         mouse {
@@ -314,7 +314,7 @@ in
     // ─────────────────────────────────────────────────────────
 
     animations {
-        slowdown 0.7
+        slowdown 0.8
     }
 
 

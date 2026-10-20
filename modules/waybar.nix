@@ -1,14 +1,14 @@
 { pkgs, ... }:
 
 let
-  base = "#191724";
-  surface = "#1f1d2e";
-  text = "#e0def4";
-  muted = "#6e6a86";
-  iris = "#c4a7e7";
-  love = "#eb6f92";
-  foam = "#9ccfd8";
-  gold = "#f6c177";
+  base = "#121212";
+  surface = "#1c1c1c";
+  text = "#dbd7ca";
+  muted = "#758575";
+  iris = "#cb9bda";
+  love = "#cb7676";
+  foam = "#5eaab5";
+  gold = "#e6cc77";
 
   icon =
     let
@@ -85,23 +85,22 @@ in
       height = 28;
       spacing = 0;
       modules-left = [
-        "hyprland/workspaces"
-        "hyprland/submap"
+        "niri/workspaces"
       ];
       modules-center = [ "clock" ];
       modules-right = [
         "tray"
         "idle_inhibitor"
         "custom/nightlight"
+        "temperature"
         "cpu"
         "memory"
         "bluetooth"
         "network"
-        "pulseaudio"
         "battery"
       ];
 
-      "hyprland/workspaces" = {
+      "niri/workspaces" = {
         format = "{name}";
         format-icons = {
           "1" = "1";
@@ -135,19 +134,23 @@ in
       idle_inhibitor = {
         format = "{icon}";
         format-icons = {
-          activated = "CF";
-          deactivated = "CF";
+          activated = "ZZZ";
+          deactivated = "ZZZ";
         };
         tooltip = false;
       };
 
       "custom/nightlight" = {
-        format = "NL";
+        format = "TAN";
         return-type = "json";
         exec = "${nightStatus}";
         on-click = "${nightToggle}";
         interval = 5;
         signal = 8;
+      };
+
+      temperature = {
+        format = "TEA {temperatureC}°C";
       };
 
       cpu = {
@@ -171,9 +174,9 @@ in
       };
 
       network = {
-        format-wifi = "NET {signalStrength}%";
+        format-wifi = "AIR {signalStrength}%";
         format-ethernet = "ETH up";
-        format-disconnected = "NET off";
+        format-disconnected = "AIR off";
         tooltip-format = "{essid} ({ipaddr})";
         tooltip-format-disconnected = "Disconnected";
         on-click = "${wifiMenu}";
@@ -181,9 +184,9 @@ in
       };
 
       battery = {
-        format = "BAT {capacity}%";
-        format-charging = "BAT {capacity}%+";
-        format-full = "BAT 100%";
+        format = "ZAP {capacity}%";
+        format-charging = "ZAP {capacity}%+";
+        format-full = "ZAP 100%";
         states = {
           warning = 20;
           critical = 10;
@@ -192,12 +195,12 @@ in
         interval = 2.5;
       };
 
-      pulseaudio = {
-        format = "VOL {volume}%";
-        format-muted = "VOL muted";
-        on-click = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-        scroll-step = 5;
-      };
+      # pulseaudio = {
+      #   format = "VOL {volume}%";
+      #   format-muted = "VOL muted";
+      #   on-click = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+      #   scroll-step = 5;
+      # };
     };
 
     style = ''
@@ -264,7 +267,7 @@ in
         color: ${text};
       }
 
-      #cpu, #memory, #network, #bluetooth, #pulseaudio, #battery,
+      #cpu, #memory, #network, #temperature, #bluetooth, #battery,
       #tray, #mode, #idle_inhibitor, #custom-nightlight {
         padding: 0 7px;
         color: ${text};

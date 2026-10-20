@@ -1,9 +1,9 @@
-{ unstable-pkgs, ... }:
+{ pkgs, ... }:
 
 {
   programs.zed-editor = {
     enable = true;
-    package = unstable-pkgs.zed-editor;
+    package = pkgs.zed-editor;
     userSettings = {
       icon_theme = "Zed (Default)";
       cli_default_open_behavior = "new_window";
@@ -20,8 +20,6 @@
       buffer_font_family = "JetBrains Mono";
       theme = {
         mode = "dark";
-        light = "One Light";
-        dark = "Rosé Pine";
       };
       lsp = {
         vtsls = {

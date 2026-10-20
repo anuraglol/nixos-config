@@ -11,7 +11,7 @@
 
     shellAliases = {
       cd = "z";
-      ff = "fastfetch";
+      ff = "hoshi";
       zed = "zeditor . && exit";
       zede = "zeditor . &";
       npx = "nlx";

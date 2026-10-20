@@ -1,7 +1,6 @@
 {
   pkgs,
-  unstable-pkgs,
-  herdr,
+  core-pkgs,
   ...
 }:
 
@@ -84,7 +83,6 @@ in
     htop
     unzip
     p7zip
-    opencode
     github-copilot-cli
     hey
     webkitgtk_6_0
@@ -97,7 +95,6 @@ in
     localsend
     eza
     ripgrep
-    ytmdesktop
     docker
     btop
 
@@ -145,15 +142,12 @@ in
     cargo
     SDL2
     llvm
+    pkg-config
+    alsa-lib
+    sqlite
+    dig
 
-    unstable-pkgs.claude-code
-    mcp-nixos
-    herdr.packages.${pkgs.system}.default
+    pkgs.claude-code
     httpie-appimage
-
-    # Steam/gaming utilities
-    mangohud
-    gamescope
-    protontricks
   ];
 }

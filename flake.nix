@@ -2,18 +2,26 @@
   description = "Anurag's NixOS Flake Configuration";
 
   inputs = {
+    # Stable-est channel: kernel, system services, drivers, core libraries.
+    # Update rarely — only when you want the big system bump.
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    # User/daily channel: desktop apps, dev tools, browsers, etc.
+    # Same stable branch as core, but updated independently so daily apps can
+    # roll forward without touching the core system.
+    nixpkgs-alt.url = "github:nixos/nixpkgs/nixos-26.05";
+
+    # Pinned firmware (keep exactly this commit).
     nixpkgs-firmware.url = "github:NixOS/nixpkgs/8ce4ef6cb6f871616146b9fe26d2a5ae594e94fe";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # Home-manager uses the user/daily channel so that home.packages and
+      # programs.* come from nixpkgs-alt by default.
+      inputs.nixpkgs.follows = "nixpkgs-alt";
     };
 
     vicinae.url = "github:vicinaehq/vicinae";
-    herdr.url = "github:ogulcancelik/herdr";
     helium-flake = {
       url = "github:oxcl/nix-flake-helium-browser";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -24,10 +32,9 @@
     {
       self,
       nixpkgs,
-      nixpkgs-unstable,
+      nixpkgs-alt,
       home-manager,
       vicinae,
-      herdr,
       helium-flake,
       nixpkgs-firmware,
       ...
@@ -35,15 +42,23 @@
     let
       system = "x86_64-linux";
 
-      unstable-pkgs = import nixpkgs-unstable {
+      core-pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
+        overlays = [ helium-flake.overlays.default ];
+      };
+
+      alt-pkgs = import nixpkgs-alt {
+        inherit system;
+        config.allowUnfree = true;
+        overlays = [ helium-flake.overlays.default ];
       };
     in
     {
       nixosConfigurations = {
         neko = nixpkgs.lib.nixosSystem {
           inherit system;
+          specialArgs = { inherit alt-pkgs core-pkgs; };
           modules = [
             {
               nixpkgs.overlays = [
@@ -58,21 +73,20 @@
 
             home-manager.nixosModules.home-manager
             {
-              home-manager.useGlobalPkgs = true;
+              # Home-manager uses the user/daily channel by default, so
+              # everything declared under home.packages / programs.* comes from
+              # nixpkgs-alt and can be updated independently of the core system.
+              home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
               home-manager.extraSpecialArgs = {
                 inherit
-                  unstable-pkgs
+                  core-pkgs
                   vicinae
-                  herdr
+                  helium-flake
                   ;
               };
-              # Point this directly to your separate home.nix config file
               home-manager.users.anurag = import ./home.nix;
-            }
-            {
-              _module.args = { inherit unstable-pkgs; };
             }
           ];
         };

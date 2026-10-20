@@ -1,7 +1,7 @@
 {
   config,
   pkgs,
-  unstable-pkgs,
+  alt-pkgs,
   ...
 }:
 
@@ -9,7 +9,6 @@
   imports = [
     ./hardware-configuration.nix
     ./modules/hardware.nix
-    # ./modules/sway.nix
     ./modules/greeter.nix
   ];
 
@@ -26,9 +25,6 @@
   networking.hostName = "neko";
 
   time.timeZone = "Asia/Kolkata";
-  # glibc-locales does not include en_IN.UTF-8 by default, so use a
-  # supported UTF-8 locale as the default and keep Indian formats via
-  # the individual LC_* variables.
   i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.extraLocaleSettings = {
@@ -43,20 +39,6 @@
     LC_TIME = "en_IN";
   };
 
-  # GNOME / GDM disabled; using ly instead.
-  # services.displayManager.gdm.enable = true;
-  # services.desktopManager.gnome.enable = true;
-
-  # services.gnome.core-apps.enable = false;
-  # services.gnome.core-developer-tools.enable = false;
-  # services.gnome.games.enable = false;
-  # environment.gnome.excludePackages = with pkgs; [
-  #   gnome-tour
-  #   gnome-user-docs
-  # ];
-
-  # Don't restart the display manager on rebuild; doing so kills the active
-  # graphical session and logs the user out.
   systemd.services.display-manager.restartIfChanged = false;
 
   services.printing.enable = false;
@@ -183,39 +165,15 @@
   };
 
   programs.niri.enable = true;
-  programs.firefox.enable = true;
+  programs.firefox = {
+    enable = true;
+    package = alt-pkgs.firefox;
+  };
   programs.dconf.enable = true;
   programs.fish.enable = true;
-  programs.yazi.enable = true;
-
-  # Steam + gaming support
-  programs.steam = {
+  programs.yazi = {
     enable = true;
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
-    localNetworkGameTransfers.openFirewall = true;
-  };
-  programs.gamemode.enable = true;
-  hardware.graphics.enable = true;
-  hardware.graphics.enable32Bit = true;
-
-  # Roblox via Sober (Flatpak). The service adds the Sober repo and installs the
-  # app on the first graphical login after a rebuild.
-  systemd.user.services.sober-install = {
-    description = "Install Roblox Sober from its Flatpak repo";
-    wantedBy = [ "default.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = pkgs.writeShellScript "sober-install" ''
-        set -euo pipefail
-        export PATH="${pkgs.flatpak}/bin:${pkgs.gnugrep}/bin:$PATH"
-        flatpak --user remote-add --if-not-exists sober https://sober.vinegarhq.org/repo/sober.flatpakrepo
-        if ! flatpak --user list --app | grep -q org.vinegarhq.Sober; then
-          flatpak --user install -y sober org.vinegarhq.Sober
-        fi
-      '';
-    };
+    package = alt-pkgs.yazi;
   };
 
   programs.nix-ld.enable = true;
@@ -279,13 +237,6 @@
     ifuse
     libimobiledevice
     elmPackages.elm
-
-    # GNOME extensions (disabled while not running GNOME).
-    # gnomeExtensions.blur-my-shell
-    # gnomeExtensions.caffeine
-    # gnomeExtensions.clipboard-indicator
-    # gnomeExtensions.vicinae
-    # gnomeExtensions.system-monitor
   ];
 
   fonts.packages = with pkgs; [

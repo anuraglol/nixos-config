@@ -13,30 +13,30 @@
       bold_font = "JetBrains Mono Bold";
       window_padding_width = 10;
 
-      background = "#1f1d2e";
-      foreground = "#e0def4";
-      selection_background = "#2f2c40";
-      selection_foreground = "#e0def4";
-      cursor = "#e0def4";
-      cursor_text_color = "#1f1d2e";
+      background = "#121212";
+      foreground = "#dbd7ca";
+      selection_background = "#333333";
+      selection_foreground = "#dbd7ca";
+      cursor = "#dbd7ca";
+      cursor_text_color = "#121212";
 
-      color0 = "#26233a";
-      color1 = "#eb6f92";
-      color2 = "#31748f";
-      color3 = "#f6c177";
-      color4 = "#9ccfd8";
-      color5 = "#c4a7e7";
-      color6 = "#ebbcba";
-      color7 = "#e0def4";
+      color0 = "#121212";
+      color1 = "#cb7676";
+      color2 = "#4d9375";
+      color3 = "#e6cc77";
+      color4 = "#6394bf";
+      color5 = "#d9739f";
+      color6 = "#5eaab5";
+      color7 = "#dbd7ca";
 
-      color8 = "#908caa";
-      color9 = "#eb6f92";
-      color10 = "#31748f";
-      color11 = "#f6c177";
-      color12 = "#9ccfd8";
-      color13 = "#c4a7e7";
-      color14 = "#ebbcba";
-      color15 = "#e0def4";
+      color8 = "#758575";
+      color9 = "#cb7676";
+      color10 = "#4d9375";
+      color11 = "#e6cc77";
+      color12 = "#6394bf";
+      color13 = "#d9739f";
+      color14 = "#5eaab5";
+      color15 = "#dbd7ca";
     };
   };
 }
