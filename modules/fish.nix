@@ -16,7 +16,7 @@
       zede = "zeditor . &";
       npx = "nlx";
       please = "sudo $history[1]";
-      cl = "clear";
+      cls = "clear";
       sys-rebuild = "sudo nixos-rebuild switch --flake ~/Documents/nixos-config#neko";
       pc = "nix run nixpkgs#process-compose -- -f process-compose.yaml";
       fupdate = "nix flake update --flake ~/Documents/nixos-config";

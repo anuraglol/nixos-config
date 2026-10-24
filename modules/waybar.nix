@@ -92,7 +92,6 @@ in
         "tray"
         "idle_inhibitor"
         "custom/nightlight"
-        "temperature"
         "cpu"
         "memory"
         "bluetooth"
@@ -147,10 +146,6 @@ in
         on-click = "${nightToggle}";
         interval = 5;
         signal = 8;
-      };
-
-      temperature = {
-        format = "TEA {temperatureC}°C";
       };
 
       cpu = {
@@ -267,7 +262,7 @@ in
         color: ${text};
       }
 
-      #cpu, #memory, #network, #temperature, #bluetooth, #battery,
+      #cpu, #memory, #network, #bluetooth, #battery,
       #tray, #mode, #idle_inhibitor, #custom-nightlight {
         padding: 0 7px;
         color: ${text};

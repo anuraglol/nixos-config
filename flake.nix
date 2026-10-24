@@ -2,16 +2,8 @@
   description = "Anurag's NixOS Flake Configuration";
 
   inputs = {
-    # Stable-est channel: kernel, system services, drivers, core libraries.
-    # Update rarely — only when you want the big system bump.
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
-
-    # User/daily channel: desktop apps, dev tools, browsers, etc.
-    # Same stable branch as core, but updated independently so daily apps can
-    # roll forward without touching the core system.
     nixpkgs-alt.url = "github:nixos/nixpkgs/nixos-26.05";
-
-    # Pinned firmware (keep exactly this commit).
     nixpkgs-firmware.url = "github:NixOS/nixpkgs/8ce4ef6cb6f871616146b9fe26d2a5ae594e94fe";
 
     home-manager = {
