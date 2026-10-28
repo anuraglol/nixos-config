@@ -2,6 +2,7 @@
   config,
   pkgs,
   alt-pkgs,
+  lib,
   ...
 }:
 
@@ -73,9 +74,6 @@
 
   services.power-profiles-daemon.enable = true;
   services.upower.enable = true;
-  services.tailscale = {
-    enable = true;
-  };
 
   boot.kernel.sysctl = {
     "net.ipv4.ip_forward" = 1;
@@ -86,56 +84,28 @@
   services.gvfs.enable = true;
 
   services.flatpak.enable = true;
-  networking = {
-    nameservers = [
-      "127.0.0.1"
-      "::1"
-    ];
-    networkmanager = {
-      enable = true;
-      dns = "none";
-    };
-    extraHosts = ''
-      127.0.0.1 local.app.beanstalk.fi
-    '';
-  };
+  networking.networkmanager.enable = true;
 
-  services.caddy = {
-    enable = false;
-    virtualHosts."localhost".extraConfig = ''
-      tls internal
-      respond "Hello, world!"
-    '';
-  };
-
-  services.resolved.enable = false;
+  # services.resolved.enable = false;
   virtualisation.docker = {
     enable = true;
   };
 
-  # services.stubby = {
-  #   enable = true;
-  #   settings = pkgs.stubby.passthru.settingsExample // {
-  #     upstream_recursive_servers = [
-  #       {
-  #         address_data = "1.1.1.1";
-  #         tls_auth_name = "cloudflare-dns.com";
-  #       }
-  #       {
-  #         address_data = "1.0.0.1";
-  #         tls_auth_name = "cloudflare-dns.com";
-  #       }
-  #       {
-  #         address_data = "8.8.8.8";
-  #         tls_auth_name = "dns.google";
-  #       }
-  #       {
-  #         address_data = "8.8.4.4";
-  #         tls_auth_name = "dns.google";
-  #       }
-  #     ];
-  #   };
-  # };
+  services.stubby = {
+    enable = true;
+    settings = pkgs.stubby.passthru.settingsExample // {
+      upstream_recursive_servers = [
+        {
+          address_data = "1.1.1.1";
+          tls_auth_name = "cloudflare-dns.com";
+        }
+        {
+          address_data = "1.0.0.1";
+          tls_auth_name = "cloudflare-dns.com";
+        }
+      ];
+    };
+  };
 
   networking.firewall = {
     enable = true;
@@ -298,6 +268,10 @@
       }
     ];
   };
+
+  nixpkgs.config.permittedInsecurePackages = [
+    "ventoy-1.1.12"
+  ];
 
   services.keyd = {
     enable = true;

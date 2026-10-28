@@ -146,6 +146,8 @@ in
     alsa-lib
     sqlite
     dig
+    github-copilot-cli
+    gnome-boxes
 
     pkgs.claude-code
     httpie-appimage

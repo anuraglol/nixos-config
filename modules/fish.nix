@@ -29,6 +29,14 @@
       function fish_greeting
       end
 
+      function sudo
+          if test "$argv" = "!!"
+              eval command sudo $history[1]
+          else
+              command sudo $argv
+          end
+      end
+
       functions --copy fish_prompt original_fish_prompt
       function fish_prompt
         original_fish_prompt
