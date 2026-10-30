@@ -19,6 +19,8 @@
       selection_foreground = "#dbd7ca";
       cursor = "#dbd7ca";
       cursor_text_color = "#121212";
+      background_opacity = "0.95";
+      dynamic_background_opacity = "yes";
 
       color0 = "#121212";
       color1 = "#cb7676";

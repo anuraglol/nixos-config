@@ -32,19 +32,7 @@ let
   '';
 in
 {
-  boot.kernelPackages = pkgs.linuxPackagesFor (
-    pkgs.linuxPackages_latest.kernel.override {
-      argsOverride = rec {
-        version = "7.2.6";
-        modDirVersion = "7.2.6";
-
-        src = pkgs.fetchurl {
-          url = "https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-${version}.tar.xz";
-          hash = "sha256-A5rvhPKwmUrto/T8/D0C7J16m7uQIOomTEP0Rshg9gY=";
-        };
-      };
-    }
-  );
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # s2idle reliability workarounds — LOAD-BEARING, do not remove without
   # evidence from amd_s2idle.py. They look like cargo cult and have been

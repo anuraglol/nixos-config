@@ -8,34 +8,25 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "usb_storage" "sd_mod" "sdhci_pci" ];
+  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "usbhid" "usb_storage" "sd_mod" "sdhci_pci" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
-  boot.kernelParams = [
-    # Workaround for display engine freeze upon s2idle exit
-     "amdgpu.dcdebugmask=0x10"
-
-     # Prevents race conditions during display power-gating recovery
-     "amdgpu.sg_display=0"
-
-     # Ensures the AMD P-State EPP driver properly negotiates lowest-frequency transitions
-     "amd_pstate=active"
-  ];
-
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/078d8889-a39f-4c5b-be1f-0c6158fb316f";
+    { device = "/dev/disk/by-uuid/48b3ad37-8f0a-4805-b3db-f111b850f305";
       fsType = "ext4";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/ED60-BF26";
+    { device = "/dev/disk/by-uuid/AF63-8E73";
       fsType = "vfat";
       options = [ "fmask=0077" "dmask=0077" ];
     };
 
-  swapDevices = [ ];
+  swapDevices =
+    [ { device = "/dev/disk/by-uuid/4fbf8d8a-b88b-47e2-ae57-785361b9c594"; }
+    ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

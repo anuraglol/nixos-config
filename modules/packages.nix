@@ -151,5 +151,6 @@ in
 
     pkgs.claude-code
     httpie-appimage
+    nextdns
   ];
 }
