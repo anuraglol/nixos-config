@@ -124,6 +124,10 @@ in
         };
       };
 
+      tray = {
+        spacing = 8;
+      };
+
       clock = {
         format = "{:%H:%M}";
         format-alt = "{:%a %d %b %Y}";

@@ -51,12 +51,12 @@ in
   # down far enough for the SoC to reach that state. They cost some idle
   # battery life; reliability is the priority here.
   boot.kernelParams = [
-    # PCIe links stay up -> shallower s0ix, no L1.2 exit problems.
     "pcie_aspm=off"
-    # NVMe never enters deep APST states (a common s0ix exit blocker).
     "nvme_core.default_ps_max_latency_us=0"
     # USB devices stay runtime-resumed so they can't block s0ix entry/exit.
     "usbcore.autosuspend=-1"
+    "amd_iommu=on"
+    "iommu=pt"
   ];
 
   # Log per-device suspend/resume timings. If a suspend ever hangs again, the

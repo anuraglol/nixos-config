@@ -2,6 +2,7 @@
   pkgs,
   vicinae,
   helium-flake,
+  sidra,
   lib,
   ...
 }:

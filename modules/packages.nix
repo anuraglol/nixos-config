@@ -1,21 +1,28 @@
 {
   pkgs,
   core-pkgs,
+  sidra,
   ...
 }:
 
 let
-  # qBittorrent (Qt6 Widgets) ignores Sway's fractional scale and renders at 1x,
-  # unlike Qt Quick apps (e.g. vicinae) which honour the wayland fractional-scale
-  # protocol natively. Force QT_SCALE_FACTOR on this binary only, so it scales
-  # correctly regardless of launcher, without polluting the global environment
-  # (which would double-scale the apps that already scale themselves).
   qbittorrent-scaled = pkgs.symlinkJoin {
     name = "qbittorrent-scaled";
     paths = [ pkgs.qbittorrent ];
     nativeBuildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
       wrapProgram $out/bin/qbittorrent --set QT_SCALE_FACTOR 1.25
+    '';
+  };
+
+  helium-scaled = pkgs.symlinkJoin {
+    name = "helium-scaled";
+    paths = [ pkgs.helium ];
+    buildInputs = [ pkgs.makeWrapper ];
+
+    postBuild = ''
+      wrapProgram $out/bin/helium \
+        --add-flags "--force-device-scale-factor=1.05"
     '';
   };
 
@@ -90,6 +97,7 @@ in
     quickshell
     nh
     impression
+    gimp
     gpu-screen-recorder
     killport
     localsend
@@ -103,7 +111,7 @@ in
     qbittorrent-scaled
     bibata-cursors
     chromium
-    helium
+    helium-scaled
     obsidian
 
     nautilus
@@ -147,10 +155,27 @@ in
     sqlite
     dig
     github-copilot-cli
+    helix
     gnome-boxes
+    libreoffice
 
     pkgs.claude-code
     httpie-appimage
-    nextdns
+
+    rust-analyzer
+    gopls
+    typescript
+    typescript-language-server
+    svelte-language-server
+
+    lldb
+    delve
+    sidra.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+    gnomeExtensions.blur-my-shell
+    gnomeExtensions.caffeine
+    gnomeExtensions.clipboard-indicator
+    gnomeExtensions.just-perfection
+    gnomeExtensions.system-monitor
   ];
 }

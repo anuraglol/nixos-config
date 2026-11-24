@@ -10,6 +10,7 @@
     };
 
     settings = {
+      hide_window_decorations = true;
       bold_font = "JetBrains Mono Bold";
       window_padding_width = 10;
 

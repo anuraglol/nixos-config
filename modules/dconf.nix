@@ -82,9 +82,12 @@
       accel-profile = "flat";
       speed = 0.107296;
     };
+
     "org/gnome/desktop/peripherals/touchpad" = {
-      speed = -0.5;
-      two-finger-scrolling-enabled = true;
+      tap-to-click = true;
+      natural-scroll = true;
+      disable-while-typing = true;
+      speed = -0.3;
     };
     "org/gnome/desktop/wm/keybindings" = {
       close = [ "<Super>w" ];

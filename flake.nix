@@ -8,15 +8,21 @@
 
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
-      # Home-manager uses the user/daily channel so that home.packages and
+      # Home-manager uses the user/daily channel so that homescal.packages and
       # programs.* come from nixpkgs-alt by default.
       inputs.nixpkgs.follows = "nixpkgs-alt";
     };
 
     vicinae.url = "github:vicinaehq/vicinae";
+
     helium-flake = {
       url = "github:oxcl/nix-flake-helium-browser";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-alt";
+    };
+
+    sidra = {
+      url = "github:wimpysworld/sidra";
+      inputs.nixpkgs.follows = "nixpkgs-alt";
     };
   };
 
@@ -29,6 +35,7 @@
       vicinae,
       helium-flake,
       nixpkgs-firmware,
+      sidra,
       ...
     }@inputs:
     let
@@ -65,9 +72,6 @@
 
             home-manager.nixosModules.home-manager
             {
-              # Home-manager uses the user/daily channel by default, so
-              # everything declared under home.packages / programs.* comes from
-              # nixpkgs-alt and can be updated independently of the core system.
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
@@ -76,6 +80,7 @@
                   core-pkgs
                   vicinae
                   helium-flake
+                  sidra
                   ;
               };
               home-manager.users.anurag = import ./home.nix;

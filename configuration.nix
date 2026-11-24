@@ -19,6 +19,7 @@
       canTouchEfiVariables = true;
     };
     timeout = 1;
+    systemd-boot.configurationLimit = 10;
   };
 
   hardware.amdgpu.initrd.enable = true;
@@ -56,6 +57,8 @@
     package = pkgs.mariadb;
   };
 
+  services.fwupd.enable = true;
+
   services.postgresql = {
     enable = true;
     package = pkgs.postgresql_16;
@@ -68,7 +71,7 @@
   };
 
   services.tailscale = {
-    enable = true;
+    enable = false;
   };
 
   services.redis.servers.local = {
@@ -101,6 +104,14 @@
     allowedUDPPorts = [ 53317 ];
   };
 
+  programs.steam = {
+    enable = true;
+    extraCompatPackages = with pkgs; [
+      proton-ge-bin
+    ];
+  };
+  programs.gamemode.enable = true;
+
   services.openssh = {
     enable = true;
     settings = {
@@ -122,7 +133,7 @@
     shell = pkgs.fish;
   };
 
-  programs.niri.enable = true;
+  programs.niri.enable = false;
   programs.firefox = {
     enable = true;
     package = alt-pkgs.firefox;
@@ -143,16 +154,22 @@
     binfmt = true;
   };
 
-  services.nextdns = {
-    enable = true;
-    arguments = [
-      "-profile"
-      "38a36c"
-      "-cache-size"
-      "10MB"
-    ];
-  };
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
 
+  services.gnome.core-apps.enable = false;
+  services.gnome.core-developer-tools.enable = false;
+  services.gnome.games.enable = false;
+
+  # services.nextdns = {
+  #   enable = true;
+  #   arguments = [
+  #     "-profile"
+  #     "38a36c"
+  #     "-cache-size"
+  #     "10MB"
+  #   ];
+  # };
   xdg.portal = {
     enable = true;
     extraPortals = [
@@ -161,7 +178,7 @@
       pkgs.xdg-desktop-portal-hyprland
     ];
     # Route the file picker to the GNOME backend (the pretty GTK4/Nautilus one);
-    # let gtk handle everything else. In a Hyprland session the Hyprland portal
+    # let gtk handle everything else. In a Hyprland session thkkkkkkkkkkkke Hyprland portal
     # takes precedence for screencast/window sharing.
     config.common.default = [
       "hyprland"
@@ -205,7 +222,11 @@
     ifuse
     libimobiledevice
     elmPackages.elm
+    cloudflare-warp
+    cloudflared
   ];
+
+  services.cloudflare-warp.enable = false;
 
   fonts.packages = with pkgs; [
     jetbrains-mono

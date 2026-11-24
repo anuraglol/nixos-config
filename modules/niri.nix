@@ -30,7 +30,7 @@ let
   # Executable paths get unique names so they don't shadow packages
   # inside `home.packages`.
   swaylockBin = pkgs.writeShellScript "niri-swaylock" ''
-    exec ${pkgs.swaylock}/bin/swaylock -f --color ${lib.removePrefix "#" base}ff
+    exec ${pkgs.swaylock}/bin/swaylock -f --color 121212ff
   '';
   systemctlBin = "${pkgs.systemd}/bin/systemctl";
   swayosdBin = "${pkgs.swayosd}/bin/swayosd-client";
@@ -61,27 +61,6 @@ let
         "Screenshot" \
         "Region copied to clipboard"
   '';
-
-  # ─────────────────────────────────────────────────────────────
-  # Night light
-  # ─────────────────────────────────────────────────────────────
-
-  nightToggle = pkgs.writeShellScript "niri-nightlight-toggle" ''
-    if ${pkgs.procps}/bin/pgrep -x wlsunset >/dev/null; then
-      ${pkgs.procps}/bin/pkill -x wlsunset
-    else
-      ${pkgs.wlsunset}/bin/wlsunset \
-        -t 3499 \
-        -T 3500 \
-        >/dev/null 2>&1 &
-    fi
-
-    ${pkgs.procps}/bin/pkill -RTMIN+8 waybar || true
-  '';
-
-  # ─────────────────────────────────────────────────────────────
-  # SwayOSD styling
-  # ─────────────────────────────────────────────────────────────
 
   swayosdStyle = pkgs.writeText "swayosd-style.css" ''
     window {
@@ -244,7 +223,7 @@ in
             tap
             natural-scroll
             dwt
-            accel-speed -0.55
+            accel-speed -0.3
         }
 
         mouse {
@@ -433,7 +412,7 @@ in
         }
 
         ${mod}+B {
-            spawn "flatpak" "run" "app.zen_browser.zen";
+            spawn "helium";
         }
 
         ${mod}+E {
