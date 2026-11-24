@@ -11,6 +11,7 @@
     ./hardware-configuration.nix
     ./modules/hardware.nix
     ./modules/greeter.nix
+    ./modules/niri-stack
   ];
 
   boot.loader = {
@@ -133,7 +134,6 @@
     shell = pkgs.fish;
   };
 
-  programs.niri.enable = false;
   programs.firefox = {
     enable = true;
     package = alt-pkgs.firefox;

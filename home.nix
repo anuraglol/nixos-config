@@ -20,7 +20,8 @@
     ./modules/kitty.nix
     ./modules/git.nix
     ./modules/mpv.nix
-    ./modules/niri.nix
+    ./modules/desktop-base.nix
+    ./modules/waybar.nix
     vicinae.homeManagerModules.default
   ];
 

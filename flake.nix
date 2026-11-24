@@ -24,6 +24,11 @@
       url = "github:wimpysworld/sidra";
       inputs.nixpkgs.follows = "nixpkgs-alt";
     };
+
+    niri = {
+      url = "github:bugeats/niri-flake/7e196a5ce0bf209d3aca844bb31edce5284d6484";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -36,6 +41,7 @@
       helium-flake,
       nixpkgs-firmware,
       sidra,
+      niri,
       ...
     }@inputs:
     let
@@ -57,7 +63,7 @@
       nixosConfigurations = {
         neko = nixpkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit alt-pkgs core-pkgs; };
+          specialArgs = { inherit alt-pkgs core-pkgs inputs; };
           modules = [
             {
               nixpkgs.overlays = [
@@ -81,6 +87,7 @@
                   vicinae
                   helium-flake
                   sidra
+                  inputs
                   ;
               };
               home-manager.users.anurag = import ./home.nix;
