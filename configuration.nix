@@ -104,6 +104,7 @@
     allowedUDPPorts = [ 53317 ];
   };
 
+  programs.dconf.enable = true;
   programs.steam = {
     enable = true;
     extraCompatPackages = with pkgs; [
@@ -180,9 +181,14 @@
       "wlr"
     ];
     config.common."org.freedesktop.impl.portal.FileChooser" = [ "gnome" ];
+    config.common."org.freedesktop.impl.portal.Settings" = [ "gnome" ];
     config.hyprland.default = [
       "gnome"
     ];
+    # GNOME portal needs mutter for these; keep them on Hyprland.
+    config.hyprland."org.freedesktop.impl.portal.ScreenCast" = [ "hyprland" ];
+    config.hyprland."org.freedesktop.impl.portal.ScreenShot" = [ "hyprland" ];
+    config.hyprland."org.freedesktop.impl.portal.GlobalShortcuts" = [ "hyprland" ];
     xdgOpenUsePortal = true;
   };
 

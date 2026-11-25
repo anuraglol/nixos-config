@@ -234,8 +234,11 @@ in
           # ─────────────────────────────────────────────────────────────────
           # Screenshots & Screen Recording
           # ─────────────────────────────────────────────────────────────────
-          (mkExec ''"PRINT"'' "omanix-cmd-screenshot" "Screenshot")
-          (mkExec ''"SHIFT + PRINT"'' "omanix-cmd-screenshot smart clipboard" "Screenshot to Clipboard")
+          # Laptop PrtSc sends SUPER+SHIFT+S (full screen); Fn+PrtSc sends PRINT
+          # (region select). Both copy straight to the clipboard.
+          (mkExec ''mod .. " + SHIFT + S"'' "omanix-cmd-screenshot fullscreen" "Fullscreen Screenshot to Clipboard")
+          (mkExec ''"PRINT"'' "omanix-cmd-screenshot" "Region Screenshot to Clipboard")
+          (mkExec ''"SHIFT + PRINT"'' "omanix-cmd-screenshot" "Region Screenshot to Clipboard")
           (mkExec ''"ALT + PRINT"'' "omanix-cmd-screenrecord" "Screen Record Toggle")
           (mkExec ''mod .. " + PRINT"'' "pkill hyprpicker || hyprpicker -a" "Color Picker")
           (mkExec ''mod .. " + CTRL + PRINT"'' "omanix-capture-text" "Extract Text (OCR)")

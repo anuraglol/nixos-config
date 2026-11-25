@@ -78,6 +78,18 @@ in
             opacity = "1.0 1.0";
           }
 
+          # Helium file picker dialogs (Save As / Open File)
+          {
+            match = {
+              class = "^(helium)$";
+              title = "(?i)^(save( file| as)?|open( file)?)$";
+            };
+            tag = "+helium-file-dialog";
+          }
+          { match = { tag = "helium-file-dialog"; }; float = true; }
+          { match = { tag = "helium-file-dialog"; }; center = true; }
+          { match = { tag = "helium-file-dialog"; }; size = "900 600"; }
+
           # ─────────────────────────────────────────────────────────────────
           # Terminals
           # ─────────────────────────────────────────────────────────────────

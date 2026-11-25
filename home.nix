@@ -240,6 +240,9 @@ in
   gtk = {
     enable = true;
 
+    # Applies to GTK2/GTK3 and gets mirrored into dconf as 'prefer-dark'.
+    colorScheme = "dark";
+
     theme = {
       name = "Adwaita-dark";
       package = pkgs.gnome-themes-extra;
@@ -269,17 +272,66 @@ in
       gtk-xft-rgba = "rgb";
     };
 
-    gtk4.extraConfig = {
-      gtk-xft-antialias = 1;
-      gtk-xft-hinting = 1;
-      gtk-xft-hintstyle = "hintfull";
-      gtk-xft-rgba = "rgb";
+    # GNOME's Adwaita-dark is a GTK3 theme only. GTK4 has built-in Adwaita
+    # with a dark variant, which is selected by the settings below.
+    gtk4 = {
+      theme = null;
+
+      # Home Manager writes gtk-interface-color-scheme as a number, but GTK
+      # 4.20+ parses this enum from nicknames and rejects numeric values.
+      # Write the valid string form ourselves instead.
+      colorScheme = null;
+
+      extraConfig = {
+        gtk-application-prefer-dark-theme = true;
+        gtk-interface-color-scheme = "dark";
+        gtk-xft-antialias = 1;
+        gtk-xft-hinting = 1;
+        gtk-xft-hintstyle = "hintfull";
+        gtk-xft-rgba = "rgb";
+      };
     };
   };
-  dconf.settings = {
-    "org/gnome/desktop/interface" = {
-      accent-color = "blue";
+
+  dconf = {
+    enable = true;
+
+    settings = {
+      "org/gnome/desktop/interface" = {
+        color-scheme = "prefer-dark";
+        accent-color = "blue";
+      };
     };
+  };
+
+  # Home Manager's Hyprland module points NIX_XDG_DESKTOP_PORTAL_DIR at the
+  # user profile and only puts the Hyprland backend there. That backend does
+  # not implement org.freedesktop.portal.Settings, so libadwaita apps
+  # (Nautilus, Boxes, Bottles...) never learn about the dark preference and
+  # fall back to light. Mirror the NixOS portal setup into the user profile.
+  xdg.portal = {
+    enable = true;
+    extraPortals = lib.mkForce (with pkgs; [
+      xdg-desktop-portal-wlr
+      xdg-desktop-portal-gtk
+      xdg-desktop-portal-gnome
+      xdg-desktop-portal-hyprland
+    ]);
+    config = {
+      common = {
+        default = [ "wlr" ];
+        "org.freedesktop.impl.portal.FileChooser" = [ "gnome" ];
+        "org.freedesktop.impl.portal.Settings" = [ "gnome" ];
+      };
+      hyprland = {
+        default = [ "gnome" ];
+        # GNOME portal needs mutter for these; keep them on Hyprland.
+        "org.freedesktop.impl.portal.ScreenCast" = [ "hyprland" ];
+        "org.freedesktop.impl.portal.ScreenShot" = [ "hyprland" ];
+        "org.freedesktop.impl.portal.GlobalShortcuts" = [ "hyprland" ];
+      };
+    };
+    xdgOpenUsePortal = true;
   };
 
   # Omanix (Hyprland) session settings.

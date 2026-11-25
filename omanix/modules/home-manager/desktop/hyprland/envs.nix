@@ -13,6 +13,8 @@
       { _args = [ "XDG_SESSION_DESKTOP" "Hyprland" ]; }
       { _args = [ "GTK_THEME" "Adwaita-dark" ]; }
       { _args = [ "GTK_IM_MODULE" "" ]; }
+      { _args = [ "GTK_USE_PORTAL" "1" ]; }
+      { _args = [ "NIXOS_OZONE_WL" "1" ]; }
     ] ++ lib.optional config.omanix.quickshell.enable {
       _args = [ "OMANIX_PATH" config.omanix.quickshell.path ];
     };
