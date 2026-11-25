@@ -9,7 +9,7 @@ let
   mod = "Mod";
   terminal = "kitty";
 
-  wallpaper = "${config.home.homeDirectory}/.config/background";
+  wallpaper = "${config.home.homeDirectory}/Downloads/love-zato.png";
 
   # ─────────────────────────────────────────────────────────────
   # Rosé Pine
@@ -29,9 +29,7 @@ let
 
   # Executable paths get unique names so they don't shadow packages
   # inside `home.packages`.
-  swaylockBin = pkgs.writeShellScript "niri-swaylock" ''
-    exec ${pkgs.swaylock}/bin/swaylock -f --color 121212ff
-  '';
+  hyprlockBin = "${pkgs.hyprlock}/bin/hyprlock";
   systemctlBin = "${pkgs.systemd}/bin/systemctl";
   swayosdBin = "${pkgs.swayosd}/bin/swayosd-client";
   niriBin = "${pkgs.niri}/bin/niri";
@@ -65,7 +63,7 @@ let
   swayosdStyle = pkgs.writeText "swayosd-style.css" ''
     window {
       border-radius: 0;
-      opacity: 0.97;
+      opacity: 1.0;
       border: 2px solid ${highlightMed};
       background-color: ${surface};
     }
@@ -97,7 +95,7 @@ let
   # Lock / suspend
   # ─────────────────────────────────────────────────────────────
 
-  lock = "${swaylockBin}";
+  lock = hyprlockBin;
   # Wake outputs before suspending. Keeping the display pipeline powered
   # keeps the SoC out of the deepest S0ix substate whose exit path hangs
   # on this platform. ";" not "&&" so an IPC failure can never swallow
@@ -152,7 +150,7 @@ in
     niri
 
     # Lock
-    swaylock
+    hyprlock
 
     # Idle handling
     swayidle

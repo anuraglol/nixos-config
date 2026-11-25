@@ -1,7 +1,8 @@
-{ ... }:
+{ lib, ... }:
 
 {
-  # TUI greeter. Runs on a bare TTY and lists every NixOS session
-  # (Niri, Hyprland, Sway, GNOME if re-enabled, etc.).
-  services.displayManager.ly.enable = false;
+  # TUI greeter on a bare TTY. It replaces GDM and lists every registered
+  # session (Hyprland/Omanix, Niri, etc.) without pulling in a desktop session.
+  services.displayManager.ly.enable = true;
+  services.displayManager.gdm.enable = lib.mkForce false;
 }

@@ -1,0 +1,84 @@
+name: Deploy Docs
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: DeterminateSystems/nix-installer-action@main
+
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Build option docs
+        run: nix build .#docs
+
+      - name: Install mdBook
+        run: |
+          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.40/mdbook-v0.4.40-x86_64-unknown-linux-gnu.tar.gz | tar xz
+          chmod +x mdbook
+
+      - name: Assemble book
+        run: |
+          mkdir -p book/src
+          cp result/*.md book/src/
+          cat > book/src/index.md << 'EOF'
+          # Omanix
+
+          A declarative NixOS desktop environment based on [Hyprland](https://hyprland.org), built with Nix flakes.
+
+          Omanix is a NixOS port of [Omarchy](https://github.com/basecamp/omarchy) — a curated, keyboard-driven desktop. Unlike the original (which targets Arch Linux), Omanix is fully declarative. There is no runtime theme switching or TUI package installer; everything is configured at build time.
+
+          ## Documentation
+
+          - **[Getting Started](getting-started.md)** — add Omanix to your flake and rebuild
+          - **[Configuration Guide](configuration.md)** — common configuration patterns with examples
+          - **Options Reference** — every `omanix.*` option with types, defaults, and descriptions
+
+          ## Source
+
+          - [GitHub](https://github.com/T00fy/omanix)
+          EOF
+          cat > book/book.toml << 'EOF'
+          [book]
+          title = "Omanix Documentation"
+          authors = ["Toofy"]
+          language = "en"
+
+          [output.html]
+          default-theme = "coal"
+          preferred-dark-theme = "coal"
+          git-repository-url = "https://github.com/T00fy/omanix"
+          git-repository-icon = "fa-github"
+          EOF
+
+      - name: Build book
+        run: ./mdbook build book
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: book/book
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

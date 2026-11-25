@@ -1,0 +1,42 @@
+{ ... }:
+{
+  imports = [
+    ./theme
+    ./scripts
+    ./core/fonts.nix
+    ./core/gtk.nix
+    ./core/shell.nix
+    ./core/state.nix
+    ./core/git.nix
+    ./core/languages.nix
+    ./apps/firefox.nix
+    ./apps/obs-studio.nix
+    ./apps/ai.nix
+    ./apps/jetbrains.nix
+    ./apps/neovim.nix
+    ./apps/spotify.nix
+    ./apps/obsidian.nix
+    ./apps/whatsapp.nix
+    ./apps/mpv.nix
+    ./apps/satty.nix
+    ./apps/btop.nix
+    ./apps/tmux.nix
+    ./apps/herdr.nix
+    ./apps/gh.nix
+    ./apps/gaming.nix
+    ./desktop/hyprland/autostart.nix
+    ./desktop/hyprland/envs.nix
+    ./desktop/hyprland/visuals.nix
+    ./desktop/hyprland/bindings.nix
+    ./desktop/hyprland/input.nix
+    ./desktop/hyprland/rules.nix
+    ./desktop/hyprland/monitors.nix
+    ./desktop/lock-before-sleep.nix
+    ./desktop/quickshell.nix
+    ./desktop/tailscale.nix
+    ./audio.nix
+    ./ui/hidden-apps.nix
+    ./terminal
+    ./core/bat.nix
+  ];
+}

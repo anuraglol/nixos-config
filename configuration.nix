@@ -133,12 +133,10 @@
     shell = pkgs.fish;
   };
 
-  programs.niri.enable = false;
   programs.firefox = {
     enable = true;
     package = alt-pkgs.firefox;
   };
-  programs.dconf.enable = true;
   programs.fish.enable = true;
   programs.yazi = {
     enable = true;
@@ -154,12 +152,10 @@
     binfmt = true;
   };
 
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
-
-  services.gnome.core-apps.enable = false;
-  services.gnome.core-developer-tools.enable = false;
-  services.gnome.games.enable = false;
+  # Ly is the login manager (see modules/greeter.nix); the GNOME session is
+  # deliberately not installed. GNOME apps, portal and theme support stay.
+  services.desktopManager.gnome.enable = lib.mkForce false;
+  services.displayManager.defaultSession = "hyprland";
 
   # services.nextdns = {
   #   enable = true;
@@ -172,21 +168,19 @@
   # };
   xdg.portal = {
     enable = true;
+    wlr.enable = true;
+
     extraPortals = [
+      pkgs.xdg-desktop-portal-wlr
       pkgs.xdg-desktop-portal-gtk
       pkgs.xdg-desktop-portal-gnome
       pkgs.xdg-desktop-portal-hyprland
     ];
-    # Route the file picker to the GNOME backend (the pretty GTK4/Nautilus one);
-    # let gtk handle everything else. In a Hyprland session thkkkkkkkkkkkke Hyprland portal
-    # takes precedence for screencast/window sharing.
     config.common.default = [
-      "hyprland"
-      "gnome"
+      "wlr"
     ];
     config.common."org.freedesktop.impl.portal.FileChooser" = [ "gnome" ];
     config.hyprland.default = [
-      "hyprland"
       "gnome"
     ];
     xdgOpenUsePortal = true;

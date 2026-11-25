@@ -171,11 +171,5 @@ in
     lldb
     delve
     sidra.packages.${pkgs.stdenv.hostPlatform.system}.default
-
-    gnomeExtensions.blur-my-shell
-    gnomeExtensions.caffeine
-    gnomeExtensions.clipboard-indicator
-    gnomeExtensions.just-perfection
-    gnomeExtensions.system-monitor
   ];
 }

@@ -24,6 +24,14 @@
       url = "github:wimpysworld/sidra";
       inputs.nixpkgs.follows = "nixpkgs-alt";
     };
+
+    # Local Omanix copy. Pin its transitive Nix inputs to this flake's versions
+    # so we don't pull in a second nixpkgs/Home Manager release.
+    omanix = {
+      url = "path:./omanix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
   };
 
   outputs =
@@ -36,6 +44,7 @@
       helium-flake,
       nixpkgs-firmware,
       sidra,
+      omanix,
       ...
     }@inputs:
     let
@@ -69,6 +78,8 @@
               ];
             }
             ./configuration.nix
+            ./modules/omanix.nix
+            omanix.nixosModules.default
 
             home-manager.nixosModules.home-manager
             {
@@ -81,6 +92,7 @@
                   vicinae
                   helium-flake
                   sidra
+                  omanix
                   ;
               };
               home-manager.users.anurag = import ./home.nix;
