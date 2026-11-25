@@ -23,6 +23,12 @@
       default-folder-viewer = "icon-view";
     };
 
+    # Nautilus grid "medium" is a 96px icon, matching the requested 90-100px
+    # range. Per-folder zoom metadata can still override this in a folder.
+    "org/gnome/nautilus/icon-view" = {
+      default-zoom-level = "medium";
+    };
+
     "org/gtk/gtk4/settings/file-chooser" = {
       show-hidden = false;
       sort-directories-first = false;

@@ -290,6 +290,232 @@ in
         gtk-xft-hintstyle = "hintfull";
         gtk-xft-rgba = "rgb";
       };
+
+      # Nautilus 50 adds .nautilus-window to its real window, so these rules
+      # stay scoped to Files and leave other GTK4/libadwaita apps untouched.
+      # This is normal GTK4 user CSS, not a patched theme or a Nix store edit.
+      extraCss = ''
+        /* Compact, traditional dark file-chooser-like styling for Nautilus. */
+        .nautilus-window {
+          --window-bg-color: #1e1e20;
+          --view-bg-color: #1e1e20;
+          --headerbar-bg-color: #303034;
+          --headerbar-backdrop-color: #303034;
+          --headerbar-shade-color: #45454a;
+          --headerbar-darker-shade-color: #45454a;
+          --headerbar-border-color: #45454a;
+          --sidebar-bg-color: #303034;
+          --sidebar-backdrop-color: #303034;
+          --sidebar-border-color: #45454a;
+          --sidebar-shade-color: #45454a;
+          --secondary-sidebar-bg-color: #2a2a2e;
+          --window-fg-color: #eeeeee;
+          --view-fg-color: #eeeeee;
+          --headerbar-fg-color: #eeeeee;
+          --sidebar-fg-color: #eeeeee;
+          --secondary-sidebar-fg-color: #eeeeee;
+          --border-color: #45454a;
+          --dim-opacity: 70%;
+          --window-radius: 6px;
+
+          font-family: "JetBrains Mono";
+          font-size: 11pt;
+          font-weight: 400;
+        }
+
+        .nautilus-window headerbar {
+          min-height: 36px;
+          background-color: #303034;
+          color: #eeeeee;
+          box-shadow: inset 0 -1px #45454a;
+          border-radius: 0;
+        }
+
+        .nautilus-window headerbar button,
+        .nautilus-window headerbar menubutton > button {
+          min-width: 24px;
+          min-height: 24px;
+          padding: 3px 6px;
+          border-radius: 4px;
+          font-family: "JetBrains Mono";
+          font-size: 11pt;
+          font-weight: 400;
+        }
+
+        .nautilus-window headerbar button.pill,
+        .nautilus-window headerbar menubutton.pill > button {
+          padding: 3px 8px;
+          border-radius: 4px;
+        }
+
+        .nautilus-window headerbar button:hover,
+        .nautilus-window headerbar menubutton > button:hover {
+          background-color: #39393e;
+        }
+
+        .nautilus-window headerbar button:checked,
+        .nautilus-window headerbar menubutton > button:checked {
+          background-color: #414148;
+        }
+
+        .nautilus-window headerbar windowtitle label {
+          color: #eeeeee;
+          font-size: 11pt;
+          font-weight: 400;
+        }
+
+        .nautilus-window placessidebar {
+          background-color: #303034;
+          color: #eeeeee;
+        }
+
+        .nautilus-window placessidebar .navigation-sidebar > row {
+          min-height: 28px;
+          margin: 0 4px 1px;
+          padding: 0 6px;
+          border-radius: 6px;
+          font-family: "JetBrains Mono";
+          font-size: 11pt;
+          font-weight: 400;
+        }
+
+        .nautilus-window placessidebar .navigation-sidebar > row > revealer {
+          padding: 0 8px;
+        }
+
+        .nautilus-window placessidebar .navigation-sidebar > row image.sidebar-icon {
+          -gtk-icon-size: 14px;
+          min-width: 14px;
+          min-height: 14px;
+        }
+
+        .nautilus-window placessidebar .navigation-sidebar > row label {
+          color: #eeeeee;
+          font-size: 11pt;
+          font-weight: 400;
+        }
+
+        .nautilus-window placessidebar .navigation-sidebar > row label.dim-label {
+          color: #a5a5a5;
+          opacity: 1;
+        }
+
+        .nautilus-window placessidebar .navigation-sidebar > row:hover {
+          background-color: #39393e;
+        }
+
+        .nautilus-window placessidebar .navigation-sidebar > row:selected {
+          background-color: #414148;
+          color: #eeeeee;
+        }
+
+        .nautilus-window placessidebar .navigation-sidebar > row:selected:hover {
+          background-color: #414148;
+        }
+
+        .nautilus-window placessidebar .navigation-sidebar > row:selected:active {
+          box-shadow: none;
+        }
+
+        .nautilus-window .nautilus-pathbar {
+          background-color: #303034;
+          border-radius: 4px;
+          box-shadow: inset 0 0 0 1px #45454a;
+        }
+
+        .nautilus-window .nautilus-path-button {
+          min-height: 24px;
+          margin: 1px 2px;
+          padding: 1px 6px;
+          border-radius: 4px;
+          color: #eeeeee;
+          font-family: "JetBrains Mono";
+          font-size: 11pt;
+          font-weight: 400;
+        }
+
+        .nautilus-window .nautilus-path-button.current-dir {
+          color: #eeeeee;
+          font-weight: 400;
+        }
+
+        .nautilus-window .view,
+        .nautilus-window .nautilus-grid-view gridview {
+          background-color: #1e1e20;
+          color: #eeeeee;
+        }
+
+        .nautilus-window .nautilus-grid-view gridview {
+          padding: 8px;
+          border-spacing: 4px;
+        }
+
+        .nautilus-window .nautilus-grid-view gridview > child {
+          padding: 2px;
+          border-radius: 6px;
+        }
+
+        .nautilus-window .nautilus-grid-view .nautilus-view-cell {
+          padding: 4px;
+          border-radius: 6px;
+        }
+
+        .nautilus-window .nautilus-grid-view gridview > child:hover {
+          background-color: #39393e;
+        }
+
+        .nautilus-window .nautilus-grid-view gridview > child:selected {
+          background-color: #414148;
+          outline-color: #45454a;
+        }
+
+        .nautilus-window .nautilus-grid-view label,
+        .nautilus-window .nautilus-list-view label {
+          color: #eeeeee;
+          font-family: "JetBrains Mono";
+          font-size: 11pt;
+          font-weight: 400;
+        }
+
+        .nautilus-window .nautilus-grid-view .caption,
+        .nautilus-window .nautilus-list-view .caption,
+        .nautilus-window .dim-label {
+          color: #a5a5a5;
+          opacity: 1;
+        }
+
+        .nautilus-window .nautilus-list-view columnview > listview {
+          padding-top: 6px;
+          padding-bottom: 6px;
+          margin-left: -12px;
+          margin-right: -12px;
+          border-spacing: 2px;
+        }
+
+        .nautilus-window .nautilus-list-view columnview > listview > row {
+          min-height: 28px;
+          margin-left: 12px;
+          margin-right: 12px;
+          border-radius: 4px;
+        }
+
+        .nautilus-window .nautilus-list-view columnview > listview > row:hover {
+          background-color: #39393e;
+        }
+
+        .nautilus-window .nautilus-list-view columnview > listview > row:selected {
+          background-color: #414148;
+        }
+
+        .nautilus-window .floating-bar {
+          background-color: #1e1e20;
+          border-radius: 6px;
+        }
+
+        .nautilus-window .toolbar.no-bottom-padding {
+          padding-bottom: 0;
+        }
+      '';
     };
   };
 
@@ -320,7 +546,10 @@ in
     config = {
       common = {
         default = [ "wlr" ];
-        "org.freedesktop.impl.portal.FileChooser" = [ "gnome" ];
+        # xdg-desktop-portal-gtk is still GTK3, so it gives browsers the
+        # traditional GtkFileChooserDialog. Keep Settings on GNOME portal so
+        # GTK4/libadwaita apps still receive the dark color scheme.
+        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
         "org.freedesktop.impl.portal.Settings" = [ "gnome" ];
       };
       hyprland = {

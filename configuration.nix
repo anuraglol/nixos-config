@@ -180,7 +180,9 @@
     config.common.default = [
       "wlr"
     ];
-    config.common."org.freedesktop.impl.portal.FileChooser" = [ "gnome" ];
+    # Keep browser file choosers on the traditional GTK3 dialog while GTK4
+    # apps continue to read the color scheme from the GNOME portal.
+    config.common."org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
     config.common."org.freedesktop.impl.portal.Settings" = [ "gnome" ];
     config.hyprland.default = [
       "gnome"
