@@ -65,6 +65,14 @@ in
 
           { match = { class ="^(org.gnome.Nautilus)"; }; tag = "+floating-window"; }
 
+          # Files + browser portal file choosers. The GNOME portal chooser
+          # uses the org.gnome.Nautilus class too; keep the old GTK3 portal
+          # class covered for browsers that still fall back to it.
+          {
+            match = { class = "^(org.gnome.Nautilus|xdg-desktop-portal-gnome|xdg-desktop-portal-gtk)$"; };
+            tag = "+file-window-rounded";
+          }
+
           # ─────────────────────────────────────────────────────────────────
           # Browsers
           # ─────────────────────────────────────────────────────────────────
@@ -89,6 +97,7 @@ in
           { match = { tag = "helium-file-dialog"; }; float = true; }
           { match = { tag = "helium-file-dialog"; }; center = true; }
           { match = { tag = "helium-file-dialog"; }; size = "900 600"; }
+          { match = { tag = "helium-file-dialog"; }; tag = "+file-window-rounded"; }
 
           # ─────────────────────────────────────────────────────────────────
           # Terminals
@@ -199,6 +208,15 @@ in
           }
           # Popped window rounding
           { match = { tag = "pop"; }; rounding = 8; }
+
+          # GNOME-style 12px corners only for floating, non-fullscreen Files
+          # and portal file choosers. Tiled/maximized/fullscreen stay square.
+          {
+            match = { tag = "file-window-rounded"; float = true; fullscreen = false; };
+            rounding = 12;
+          }
+          { match = { tag = "file-window-rounded"; fullscreen = true; }; rounding = 0; }
+          { match = { tag = "file-window-rounded"; float = false; }; rounding = 0; }
 
           # Prevent idle while open
           { match = { tag = "noidle"; }; idle_inhibit = "always"; }

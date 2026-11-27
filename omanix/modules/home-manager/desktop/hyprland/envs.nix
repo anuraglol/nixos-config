@@ -11,7 +11,6 @@
       { _args = [ "XDG_CURRENT_DESKTOP" "Hyprland" ]; }
       { _args = [ "XDG_SESSION_TYPE" "wayland" ]; }
       { _args = [ "XDG_SESSION_DESKTOP" "Hyprland" ]; }
-      { _args = [ "GTK_THEME" "Adwaita-dark" ]; }
       { _args = [ "GTK_IM_MODULE" "" ]; }
       { _args = [ "GTK_USE_PORTAL" "1" ]; }
       { _args = [ "NIXOS_OZONE_WL" "1" ]; }

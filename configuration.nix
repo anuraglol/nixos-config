@@ -153,10 +153,10 @@
     binfmt = true;
   };
 
-  # Ly is the login manager (see modules/greeter.nix); the GNOME session is
-  # deliberately not installed. GNOME apps, portal and theme support stay.
+  # No GNOME session/GDM: Ly boots straight into Hyprland. The GNOME portal
+  # backend stays installed only to provide the modern GTK4 file chooser.
   services.desktopManager.gnome.enable = lib.mkForce false;
-  services.displayManager.defaultSession = "hyprland";
+  services.displayManager.defaultSession = lib.mkForce "hyprland";
 
   # services.nextdns = {
   #   enable = true;
@@ -173,16 +173,15 @@
 
     extraPortals = [
       pkgs.xdg-desktop-portal-wlr
-      pkgs.xdg-desktop-portal-gtk
       pkgs.xdg-desktop-portal-gnome
       pkgs.xdg-desktop-portal-hyprland
     ];
     config.common.default = [
       "wlr"
     ];
-    # Keep browser file choosers on the traditional GTK3 dialog while GTK4
-    # apps continue to read the color scheme from the GNOME portal.
-    config.common."org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+    # Use the GNOME portal for file choosers: its dialog is GTK4/libadwaita,
+    # so it matches Nautilus instead of the older GTK3 portal dialog.
+    config.common."org.freedesktop.impl.portal.FileChooser" = [ "gnome" ];
     config.common."org.freedesktop.impl.portal.Settings" = [ "gnome" ];
     config.hyprland.default = [
       "gnome"
